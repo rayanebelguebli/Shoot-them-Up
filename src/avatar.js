@@ -3,15 +3,23 @@ export class Avatar {
 	x;
 	nom;
 	vies;
-	canvas;
 	click;
+	vitesse;
+	image;
+	canvas;
 
-	constructor(nom) {
+	constructor(nom, vitesse) {
 		this.nom = nom;
 		this.y = 0;
 		this.x = 0;
 		this.vies = 3;
 		this.click = null;
+		this.vitesse = vitesse;
+	}
+
+	setImageCanvas(image, canvas) {
+		this.image = image;
+		this.canvas = canvas;
 	}
 
 	getVies() {
@@ -35,33 +43,31 @@ export class Avatar {
 	}
 
 	changerClick(event) {
-		if (event.equals('keydown')) {
-			click = event.key;
-		} else if (event.equals('keyup')) {
-			click = null;
+		if (event.type == 'keydown') {
+			this.click = event.key;
+			this.deplacer();
+		} else if (event.type == 'keyup') {
+			this.click = null;
 		}
 	}
 
 	deplacer() {
-		switch (click) {
-			case 'ArrowLeft':
-				if (x > 0) {
-					x -= 3;
-				}
-			case 'ArrowRight':
-				if (x < canvas.width - image.width) {
-					x -= 3;
-				}
-
-			case 'ArrowDown':
-				if (y > 0) {
-					y -= 3;
-				}
-
-			case 'ArrowUp':
-				if (y < canvas.height - image.height) {
-					y += 3;
-				}
+		if (this.click == 'ArrowLeft') {
+			if (this.x > 0) {
+				this.x -= this.vitesse;
+			}
+		} else if (this.click == 'ArrowRight') {
+			if (this.x < this.canvas.width - this.image.width) {
+				this.x += this.vitesse;
+			}
+		} else if (this.click == 'ArrowUp') {
+			if (this.y > 0) {
+				this.y -= this.vitesse;
+			}
+		} else if (this.click == 'ArrowDown') {
+			if (this.y < this.canvas.height - this.image.height) {
+				this.y += this.vitesse;
+			}
 		}
 	}
 
