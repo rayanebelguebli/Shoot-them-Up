@@ -8,7 +8,7 @@ function sanitizeHtml(htmlString) {
 
 describe('constructor', () => {
 	it('devrait initialiser x, y, vies and name mais pas click', () => {
-		const avatar = new Avatar('nom');
+		const avatar = new Avatar('nom', 3);
 		assert.strictEqual(avatar.getNom(), 'nom');
 		assert.strictEqual(avatar.getX(), 0);
 		assert.strictEqual(avatar.getY(), 0);
@@ -21,7 +21,7 @@ describe('changerClick', () => {
 	if (
 		(`devrait changer variable click en fonction dans l'entrée donnée`,
 		() => {
-			const avatar = new Avatar('nom');
+			const avatar = new Avatar('nom', 3);
 			avatar.changerClick('keydown {key: "ArrowDown"}');
 			assert.strictEqual(avatar.getClick(), 'ArrowDown');
 			avatar.changerClick('keyup {key: "ArrowDown"}');
