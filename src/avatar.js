@@ -45,13 +45,16 @@ export class Avatar {
 	changerClick(event) {
 		if (event.type == 'keydown') {
 			this.click = event.key;
-			this.deplacer();
+			//this.deplacer();
 		} else if (event.type == 'keyup') {
 			this.click = null;
 		}
 	}
 
 	deplacer() {
+		console.log(this.getX());
+		console.log(this.getY());
+
 		if (this.click == 'ArrowLeft') {
 			if (this.x > 0) {
 				this.x -= this.vitesse;

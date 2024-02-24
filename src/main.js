@@ -1,3 +1,4 @@
+import { Avatar } from './avatar.js';
 import enemi from './enemis.js';
 
 const start = document.querySelector('.buttonStart');
@@ -52,3 +53,31 @@ function render() {
 	setInterval(e1.deplacer());
 	requestAnimationFrame(render);
 }
+
+const avatar = new Avatar('julien', 5);
+
+const image = new Image();
+image.src = '/images/monster.png';
+image.addEventListener('load', event => {
+	context.drawImage(image, 0, 0);
+	requestAnimationFrame(renderImage);
+});
+avatar.setImageCanvas(image, canvas);
+
+function renderImage() {
+	context.clearRect(0, 0, 10, 10);
+	context.drawImage(image, avatar.getX(), avatar.getY());
+	requestAnimationFrame(renderImage);
+}
+
+document.addEventListener('keydown', event => {
+	avatar.changerClick(event);
+});
+
+document.addEventListener('keyup', event => {
+	avatar.changerClick(event);
+});
+
+setInterval(() => {
+	avatar.deplacer();
+}, 1000 / 60);
