@@ -48,16 +48,21 @@ enemiSimple.addEventListener('load', event => {
 
 function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
+
 	context.drawImage(enemiSimple, e1.x, e1.y);
-	e1.deplacer();
-	setInterval(e1.deplacer());
+	console.log('Enemy position: ', e1.x, e1.y);
+
+	avatar.dessinerProjectiles(context, imageProjectile);
+
+	context.drawImage(avatar.image, avatar.getX(), avatar.getY());
+
 	requestAnimationFrame(render);
 }
 
 const avatar = new Avatar('julien', 5);
 
 const image = new Image();
-image.src = '/images/monster.png';
+image.src = '/images/Thompson.png';
 image.addEventListener('load', event => {
 	context.drawImage(image, 0, 0);
 	requestAnimationFrame(renderImage);
@@ -70,8 +75,14 @@ function renderImage() {
 	requestAnimationFrame(renderImage);
 }
 
+const imageProjectile = new Image();
+imageProjectile.src = '/images/bullet.png';
+
 document.addEventListener('keydown', event => {
 	avatar.changerClick(event);
+	if (event.key === ' ') {
+		avatar.tirer();
+	}
 });
 
 document.addEventListener('keyup', event => {
@@ -80,4 +91,6 @@ document.addEventListener('keyup', event => {
 
 setInterval(() => {
 	avatar.deplacer();
+	avatar.projectiles.forEach(projectile => projectile.deplacer());
+	e1.x = e1.x - 5;
 }, 1000 / 60);

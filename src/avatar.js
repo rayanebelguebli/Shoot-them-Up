@@ -1,3 +1,5 @@
+import { Projectile } from './Projectile.js';
+
 export class Avatar {
 	y;
 	x;
@@ -7,6 +9,7 @@ export class Avatar {
 	vitesse;
 	image;
 	canvas;
+	projectiles;
 
 	constructor(nom, vitesse) {
 		this.nom = nom;
@@ -15,6 +18,19 @@ export class Avatar {
 		this.vies = 3;
 		this.click = null;
 		this.vitesse = vitesse;
+		this.projectiles = [];
+	}
+
+	tirer() {
+		let projectile = new Projectile(this.x, this.y);
+		this.projectiles.push(projectile);
+	}
+
+	dessinerProjectiles(context, imageProjectile) {
+		this.projectiles.forEach(projectile => {
+			projectile.dessiner(context, imageProjectile);
+			projectile.deplacer();
+		});
 	}
 
 	setImageCanvas(image, canvas) {
@@ -52,9 +68,6 @@ export class Avatar {
 	}
 
 	deplacer() {
-		console.log(this.getX());
-		console.log(this.getY());
-
 		if (this.click == 'ArrowLeft') {
 			if (this.x > 0) {
 				this.x -= this.vitesse;
