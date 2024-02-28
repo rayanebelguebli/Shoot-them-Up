@@ -38,7 +38,7 @@ function resampleCanvas() {
 }
 
 const enemiSimple = new Image();
-enemiSimple.src = '/images/monster.png';
+enemiSimple.src = '/images/koopa.png';
 enemiSimple.addEventListener('load', event => {
 	data.forEach(e => {
 		context.drawImage(enemiSimple, e.x, e.y);
@@ -50,11 +50,15 @@ function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 
 	context.drawImage(enemiSimple, e1.x, e1.y);
-	console.log('Enemy position: ', e1.x, e1.y);
 
 	avatar.dessinerProjectiles(context, imageProjectile);
 
 	context.drawImage(avatar.image, avatar.getX(), avatar.getY());
+
+	enemis.forEach(enemi => {
+		//console.log(enemi.x);
+		context.drawImage(enemiSimple, enemi.x, enemi.y);
+	});
 
 	requestAnimationFrame(render);
 }
@@ -62,7 +66,7 @@ function render() {
 const avatar = new Avatar('julien', 5);
 
 const image = new Image();
-image.src = '/images/Thompson.png';
+image.src = '/images/mortier.png';
 image.addEventListener('load', event => {
 	context.drawImage(image, 0, 0);
 	requestAnimationFrame(renderImage);
@@ -76,7 +80,7 @@ function renderImage() {
 }
 
 const imageProjectile = new Image();
-imageProjectile.src = '/images/bullet.png';
+imageProjectile.src = '/images/bill.png';
 
 document.addEventListener('keydown', event => {
 	avatar.changerClick(event);
@@ -92,5 +96,17 @@ document.addEventListener('keyup', event => {
 setInterval(() => {
 	avatar.deplacer();
 	avatar.projectiles.forEach(projectile => projectile.deplacer());
-	e1.x = e1.x - 5;
+	e1.x = e1.x - 10;
+	enemis.forEach(enemi => {
+		enemi.x -= 10;
+	});
 }, 1000 / 60);
+
+let enemis = [];
+
+setInterval(() => {
+	let alea = Math.random() * (canvas.height - 0) + 0;
+	const newEnemy = new enemi('simple', 2000, alea);
+	enemis.push(newEnemy);
+	console.log('enemi ajouté');
+}, 3000);
