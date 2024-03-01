@@ -58,10 +58,19 @@ export class Avatar {
 		return this.click;
 	}
 
+	colision(x, y, image) {
+		this.projectiles.forEach(element => {
+			if (element.colision(x, y, image)) {
+				console.log('colision');
+			} else {
+				console.log('pas colison');
+			}
+		});
+	}
+
 	changerClick(event) {
 		if (event.type == 'keydown') {
 			this.click = event.key;
-			//this.deplacer();
 		} else if (event.type == 'keyup') {
 			this.click = null;
 		}

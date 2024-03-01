@@ -15,6 +15,15 @@ export default class enemi {
 		}
 	}
 
+	colision(x, y, image) {
+		return (
+			x >= this.x &&
+			x <= this.x + image.width &&
+			y >= this.y &&
+			y <= this.y + image.height
+		);
+	}
+
 	getVies() {
 		return this.vies;
 	}

@@ -21,3 +21,19 @@ describe('Projectile, déplacer ', () => {
 		assert.strictEqual(projectile.getY(), 0);
 	});
 });
+
+describe('Test de la fonction colision', () => {
+	it("devrait retourner true si les coordonnées sont à l'intérieur de la zone de collision", () => {
+		const projectile = new Projectile(10, 10);
+		const image = { width: 20, height: 20 };
+		const result = projectile.colision(15, 15, image);
+		assert.strictEqual(result, true);
+	});
+
+	it("devrait retourner false si les coordonnées sont à l'extérieur de la zone de collision", () => {
+		const projectile = new Projectile(10, 10);
+		const image = { width: 20, height: 20 };
+		const result = projectile.colision(41, 41, image);
+		assert.strictEqual(result, false);
+	});
+});
