@@ -95,7 +95,7 @@ describe('enVie', () => {
 
 describe('incrementScore', () => {
 	if (
-		(`devrait retourner incrémeter le score du nombre pris en compte`,
+		(`devrait incrémeter le score du nombre pris en compte`,
 		() => {
 			const avatar = new Avatar('nom');
 			avatar.incrementScore(5);
@@ -106,6 +106,24 @@ describe('incrementScore', () => {
 			assert.strictEqual(avatar.getScore(), 16);
 			avatar.incrementScore(100);
 			assert.strictEqual(avatar.getScore(), 116);
+		})
+	);
+});
+
+describe('decrementScore', () => {
+	if (
+		(`devrait décrementer le score du nombre pris en compte`,
+		() => {
+			const avatar = new Avatar('nom');
+			avatar.incrementScore(100);
+			avatar.decrementScore(5);
+			assert.strictEqual(avatar.getScore(), 95);
+			avatar.decrementScore(10);
+			assert.strictEqual(avatar.getScore(), 85);
+			avatar.decrementScore(1);
+			assert.strictEqual(avatar.getScore(), 84);
+			avatar.decrementScore(50);
+			assert.strictEqual(avatar.getScore(), 34);
 		})
 	);
 });
