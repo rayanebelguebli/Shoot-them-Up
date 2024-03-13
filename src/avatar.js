@@ -26,6 +26,10 @@ export class Avatar {
 		this.score += nb;
 	}
 
+	decrementScore(nb) {
+		this.score += nb;
+	}
+
 	tirer() {
 		let projectile = new Projectile(this.x, this.y);
 		this.projectiles.push(projectile);
