@@ -2,10 +2,6 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import { Avatar } from './avatar.js';
 
-function sanitizeHtml(htmlString) {
-	return htmlString.replaceAll(/[\n|\t]/g, '');
-}
-
 describe('constructor', () => {
 	it('devrait initialiser x, y, vies and name mais pas click', () => {
 		const avatar = new Avatar('nom', 3);
