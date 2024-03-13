@@ -96,3 +96,20 @@ describe('enVie', () => {
 		})
 	);
 });
+
+describe('incrementScore', () => {
+	if (
+		(`devrait retourner incrémeter le score du nombre pris en compte`,
+		() => {
+			const avatar = new Avatar('nom');
+			avatar.incrementScore(5);
+			assert.strictEqual(avatar.getScore(), 5);
+			avatar.incrementScore(10);
+			assert.strictEqual(avatar.getScore(), 15);
+			avatar.incrementScore(1);
+			assert.strictEqual(avatar.getScore(), 16);
+			avatar.incrementScore(100);
+			assert.strictEqual(avatar.getScore(), 116);
+		})
+	);
+});
