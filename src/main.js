@@ -63,6 +63,7 @@ setInterval(() => {
 		avatar.projectiles.forEach((projectile, index) => {
 			if (projectile.colision(enemi.x, enemi.y, imageEnemi)) {
 				enemis.splice(enemis.indexOf(enemi), 1);
+				avatar.incrementScore(5);
 			}
 		});
 	});
@@ -83,6 +84,10 @@ function render() {
 	enemis.forEach(enemi => {
 		context.drawImage(imageEnemi, enemi.x, enemi.y);
 	});
+	context.font = '40pt Calibri';
+	context.fillStyle = 'blue';
+	context.fillText(avatar.getScore(), 10, 50);
+	console.log(avatar.getScore());
 
 	requestAnimationFrame(render);
 }

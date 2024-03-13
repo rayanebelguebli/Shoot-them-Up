@@ -14,6 +14,7 @@ export class Avatar {
 
 	constructor(nom, vitesse) {
 		this.nom = nom;
+		this.score = 0;
 		this.y = 0;
 		this.x = 0;
 		this.vies = 3;
