@@ -10,4 +10,13 @@ export class Hitbox {
 		this.x = x;
 		this.y = y;
 	}
+
+	colision(hitbox) {
+		return (
+			this.x < hitbox.x + hitbox.width &&
+			this.x + this.width > hitbox.x &&
+			this.y < hitbox.y + hitbox.height &&
+			this.height + this.y > hitbox.y
+		);
+	}
 }
