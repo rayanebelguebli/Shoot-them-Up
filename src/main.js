@@ -2,15 +2,16 @@ import { Avatar } from './avatar.js';
 import Enemi from './enemis.js';
 
 const startButton = document.querySelector('.buttonStart');
+const creditsButton = document.querySelector('.credits');
 const canvas = document.querySelector('.gameCanvas');
 const context = canvas.getContext('2d');
 const enemis = [];
-
 const avatar = new Avatar('julien', 5);
 const imageMortier = new Image();
 const imageProjectile = new Image();
 const imageEnemi = new Image();
 const background = new Image();
+let spawnInterval = 3000;
 
 imageMortier.src = '/images/mortier.png';
 imageProjectile.src = '/images/bill.png';
@@ -27,6 +28,31 @@ imageEnemi.addEventListener('load', () => {
 });
 
 startButton.addEventListener('click', startGame);
+creditsButton.addEventListener('click', afficherCredits, 50);
+
+function afficherCredits(event) {
+	event.preventDefault();
+	const buttons = document.querySelectorAll('button');
+	const title = document.querySelector('h1');
+	buttons.forEach(button => (button.style.display = 'none'));
+	title.style.display = 'none';
+	const credits = document.querySelector('.divCredits');
+	credits.style.display = '';
+	const retour = document.querySelector('.retourMenu');
+	retour.style.display = '';
+	retour.addEventListener('click', afficherMenu);
+}
+
+function afficherMenu(event) {
+	event.preventDefault();
+	const buttons = document.querySelectorAll('button');
+	const title = document.querySelector('h1');
+	buttons.forEach(button => (button.style.display = ''));
+	title.style.display = '';
+	const credits = document.querySelector('.divCredits');
+	credits.style.display = 'none';
+	canvas.style.display = 'none';
+}
 
 function startGame(event) {
 	event.preventDefault();
@@ -75,7 +101,7 @@ setInterval(() => {
 	const randomY = Math.random() * (canvas.height - 0) + 0;
 	const newEnemy = new Enemi('simple', 2000, randomY);
 	enemis.push(newEnemy);
-}, 3000);
+}, spawnInterval);
 
 function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
