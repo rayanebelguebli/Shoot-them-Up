@@ -10,10 +10,12 @@ const avatar = new Avatar('julien', 5);
 const imageMortier = new Image();
 const imageProjectile = new Image();
 const imageEnemi = new Image();
+const background = new Image();
 
 imageMortier.src = '/images/mortier.png';
 imageProjectile.src = '/images/bill.png';
 imageEnemi.src = '/images/koopa.png';
+background.src = '/images/background.webp';
 
 imageMortier.addEventListener('load', () => {
 	avatar.setImageCanvas(imageMortier, canvas);
@@ -77,6 +79,7 @@ setInterval(() => {
 
 function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
+	context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
 	avatar.dessinerProjectiles(context, imageProjectile);
 	context.drawImage(avatar.image, avatar.getX(), avatar.getY());
