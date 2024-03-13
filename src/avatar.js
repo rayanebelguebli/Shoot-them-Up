@@ -10,6 +10,7 @@ export class Avatar {
 	image;
 	canvas;
 	projectiles;
+	score;
 
 	constructor(nom, vitesse) {
 		this.nom = nom;
@@ -19,6 +20,10 @@ export class Avatar {
 		this.click = null;
 		this.vitesse = vitesse;
 		this.projectiles = [];
+	}
+
+	incrementScore(nb) {
+		this.score += nb;
 	}
 
 	tirer() {
@@ -40,6 +45,10 @@ export class Avatar {
 
 	getVies() {
 		return this.vies;
+	}
+
+	getScore() {
+		return this.score;
 	}
 
 	getNom() {
