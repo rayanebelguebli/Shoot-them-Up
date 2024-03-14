@@ -1,13 +1,16 @@
+import { Hitbox } from './hitbox.js';
 export default class enemi {
 	y;
 	x;
 	type;
 	vies;
+	hitbox;
 
 	constructor(type, x, y) {
 		this.type = type;
 		this.y = y;
 		this.x = x;
+		this.hitbox = new Hitbox(69, 57, this.x, this.y);
 		if (type == 'simple') {
 			this.vies = 3;
 		} else {
@@ -42,5 +45,6 @@ export default class enemi {
 
 	deplacer() {
 		this.x--;
+		this.hitbox.x--;
 	}
 }
