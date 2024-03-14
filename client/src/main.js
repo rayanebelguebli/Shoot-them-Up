@@ -115,7 +115,7 @@ function render() {
 	enemis.forEach(enemi => {
 		context.drawImage(imageEnemi, enemi.x, enemi.y);
 	});
-	context.font = '40pt Calibri';
+	context.font = '40pt New Super Mario Font U';
 	context.fillStyle = 'blue';
 	context.fillText(avatar.getScore(), 10, 50);
 	console.log(avatar.getScore());

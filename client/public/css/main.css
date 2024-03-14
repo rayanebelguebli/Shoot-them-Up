@@ -1,3 +1,4 @@
+@import url('https://fonts.cdnfonts.com/css/new-super-mario-font-u');
 
 * {
 	box-sizing: border-box;
@@ -23,7 +24,9 @@ body {
 	justify-content: center;
 }
 h1 {
-	font-weight: 100;
+  font-family: 'New Super Mario Font U', sans-serif;
+  color: #d61313;
+  font-size: 100px;
 }
 h1 em {
 	font-style: normal;
@@ -52,7 +55,7 @@ button {
   color: #000000;
   cursor: pointer;
   display: inline-block;
-  font-family: -apple-system,sans-serif;
+  font-family: 'New Super Mario Font U', sans-serif;
   font-size: 1.2rem;
   font-weight: 700;
   letter-spacing: -.24px;

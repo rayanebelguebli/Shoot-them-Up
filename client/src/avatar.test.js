@@ -3,13 +3,12 @@ import { describe, it } from 'node:test';
 import { Avatar } from './avatar.js';
 
 describe('constructor', () => {
-	it('devrait initialiser x, y, vies and name mais pas click', () => {
+	it('devrait initialiser x, y, vies, name', () => {
 		const avatar = new Avatar('nom', 3);
 		assert.strictEqual(avatar.getNom(), 'nom');
 		assert.strictEqual(avatar.getX(), 0);
 		assert.strictEqual(avatar.getY(), 0);
 		assert.strictEqual(avatar.getVies(), 3);
-		assert.strictEqual(avatar.getClick(), null);
 	});
 });
 
@@ -35,13 +34,13 @@ describe('deplacer', () => {
 		(`devrait changer variable x ou y en fonction de click`,
 		() => {
 			const avatar = new Avatar('nom');
-			avatar.changerClick('keydown {key: "ArrowLeft"}');
+			avatar.changerClick('keydown {key: "ArrowLeft",keyCode: 37}');
 			avatar.deplacer();
 			assert.strictEqual(avatar.getX(), 0);
-			avatar.changerClick('keyup {key: "ArrowRight"}');
+			avatar.changerClick('keyup {key: "ArrowRight",keyCode: 39}');
 			avatar.deplacer();
 			assert.strictEqual(avatar.getX(), 3);
-			avatar.changerClick('keyup {key: "ArrowDown"}');
+			avatar.changerClick('keyup {key: "ArrowDown",keyCode: 40}');
 			avatar.deplacer();
 			assert.strictEqual(avatar.getY(), 3);
 		})

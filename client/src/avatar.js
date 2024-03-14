@@ -18,7 +18,7 @@ export class Avatar {
 		this.y = 0;
 		this.x = 0;
 		this.vies = 3;
-		this.click = null;
+		this.click = [];
 		this.vitesse = vitesse;
 		this.projectiles = [];
 	}
@@ -68,10 +68,6 @@ export class Avatar {
 		return this.y;
 	}
 
-	getClick() {
-		return this.click;
-	}
-
 	colision(x, y, image) {
 		this.projectiles.forEach(element => {
 			if (element.colision(x, y, image)) {
@@ -84,26 +80,29 @@ export class Avatar {
 
 	changerClick(event) {
 		if (event.type == 'keydown') {
-			this.click = event.key;
+			this.click[event.keyCode] = true;
 		} else if (event.type == 'keyup') {
-			this.click = null;
+			this.click[event.keyCode] = false;
 		}
 	}
 
 	deplacer() {
-		if (this.click == 'ArrowLeft') {
+		if (this.click[37]) {
 			if (this.x > 0) {
 				this.x -= this.vitesse;
 			}
-		} else if (this.click == 'ArrowRight') {
+		}
+		if (this.click[39]) {
 			if (this.x < this.canvas.width - this.image.width) {
 				this.x += this.vitesse;
 			}
-		} else if (this.click == 'ArrowUp') {
+		}
+		if (this.click[38]) {
 			if (this.y > 0) {
 				this.y -= this.vitesse;
 			}
-		} else if (this.click == 'ArrowDown') {
+		}
+		if (this.click[40]) {
 			if (this.y < this.canvas.height - this.image.height) {
 				this.y += this.vitesse;
 			}
