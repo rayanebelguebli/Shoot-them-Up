@@ -2,6 +2,7 @@ import { Avatar } from './avatar.js';
 import Enemi from './enemis.js';
 import { io } from 'socket.io-client';
 import timer from './timer.js';
+import draw from './draw.js';
 
 const socket = io();
 let t = new timer();
@@ -130,11 +131,11 @@ function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-	avatar.dessinerProjectiles(context, imageProjectile);
-	context.drawImage(avatar.image, avatar.getX(), avatar.getY());
+	avatar.dessinerProjectiles(canvas, context, imageProjectile);
+	draw(canvas, context, avatar.image, avatar.getX(), avatar.getY());
 
 	enemis.forEach(enemi => {
-		context.drawImage(imageEnemi, enemi.x, enemi.y);
+		draw(canvas, context, imageEnemi, enemi.x, enemi.y);
 	});
 	context.font = '40pt New Super Mario Font U';
 	context.fillStyle = 'blue';

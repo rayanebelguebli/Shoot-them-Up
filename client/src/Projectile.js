@@ -1,4 +1,6 @@
 import { Hitbox } from './hitbox.js';
+import draw from './draw.js';
+
 export class Projectile {
 	x;
 	y;
@@ -25,8 +27,8 @@ export class Projectile {
 		this.hitbox.x += this.vitesse;
 	}
 
-	dessiner(context, image) {
-		context.drawImage(image, this.x, this.y);
+	dessiner(canvas, context, image) {
+		draw(canvas, context, image, this.x, this.y);
 	}
 
 	colision(x, y, image) {

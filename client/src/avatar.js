@@ -38,9 +38,9 @@ export class Avatar {
 		this.projectiles.push(projectile);
 	}
 
-	dessinerProjectiles(context, imageProjectile) {
+	dessinerProjectiles(canvas, context, imageProjectile) {
 		this.projectiles.forEach(projectile => {
-			projectile.dessiner(context, imageProjectile);
+			projectile.dessiner(canvas, context, imageProjectile);
 			projectile.deplacer();
 		});
 	}
