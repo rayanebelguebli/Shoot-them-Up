@@ -16,12 +16,14 @@ const imageMortier = new Image();
 const imageProjectile = new Image();
 const imageEnemi = new Image();
 const background = new Image();
+const imageCoeur = new Image();
 let spawnInterval = 3000;
 
 imageMortier.src = '/images/mortier.png';
 imageProjectile.src = '/images/bill.png';
 imageEnemi.src = '/images/koopa.png';
 background.src = '/images/background.webp';
+imageCoeur.src = '/images/heart.webp';
 
 imageMortier.addEventListener('load', () => {
 	avatar.setImageCanvas(imageMortier, canvas);
@@ -145,6 +147,10 @@ function render() {
 		canvas.width / 2,
 		50
 	);
+
+	for (let i = 0; i < avatar.getVies(); i++) {
+		context.drawImage(imageCoeur, canvas.width - (3 - i) * 50, 0, 50, 50);
+	}
 
 	requestAnimationFrame(render);
 }
