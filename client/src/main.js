@@ -1,5 +1,7 @@
 import { Avatar } from './avatar.js';
 import Enemi from './enemis.js';
+import { io } from 'socket.io-client';
+const socket = io();
 
 const startButton = document.querySelector('.buttonStart');
 const creditsButton = document.querySelector('.credits');
@@ -120,3 +122,11 @@ function render() {
 
 	requestAnimationFrame(render);
 }
+
+io.on('connection', socket => {
+	console.log(`Nouvelle connexion du client ${socket.id}`);
+
+	socket.on('disconnect', () => {
+		console.log(`Déconnexion du client ${socket.id}`);
+	});
+});
