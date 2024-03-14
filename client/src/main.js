@@ -1,7 +1,10 @@
 import { Avatar } from './avatar.js';
 import Enemi from './enemis.js';
 import { io } from 'socket.io-client';
+import timer from './timer.js';
+
 const socket = io();
+let t = new timer();
 
 const startButton = document.querySelector('.buttonStart');
 const creditsButton = document.querySelector('.credits');
@@ -28,6 +31,11 @@ imageMortier.addEventListener('load', () => {
 imageEnemi.addEventListener('load', () => {
 	requestAnimationFrame(render);
 });
+
+setInterval(function () {
+	t.addTime();
+	console.log(t.getSec());
+}, 1000);
 
 startButton.addEventListener('click', startGame);
 creditsButton.addEventListener('click', afficherCredits, 50);
@@ -73,10 +81,20 @@ function resampleCanvas() {
 	canvas.height = canvas.clientHeight;
 }
 
+let canshoot = true;
+
 document.addEventListener('keydown', event => {
 	avatar.changerClick(event);
 	if (event.key === ' ') {
-		avatar.tirer();
+		if (canshoot) {
+			avatar.tirer();
+
+			canshoot = false;
+
+			setTimeout(function () {
+				canshoot = true;
+			}, 500);
+		}
 	}
 });
 
@@ -119,6 +137,14 @@ function render() {
 	context.fillStyle = 'blue';
 	context.fillText(avatar.getScore(), 10, 50);
 	console.log(avatar.getScore());
+
+	context.font = '40pt New Super Mario Font U';
+	context.fillStyle = 'blue';
+	context.fillText(
+		t.getHrs() + ':' + t.getMin() + ':' + t.getSec(),
+		canvas.width / 2,
+		50
+	);
 
 	requestAnimationFrame(render);
 }
