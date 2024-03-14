@@ -1,5 +1,5 @@
 import { Projectile } from './Projectile.js';
-
+import { Hitbox } from './hitbox.js';
 export class Avatar {
 	y;
 	x;
@@ -11,6 +11,7 @@ export class Avatar {
 	canvas;
 	projectiles;
 	score;
+	hitbox;
 
 	constructor(nom, vitesse) {
 		this.nom = nom;
@@ -21,6 +22,7 @@ export class Avatar {
 		this.click = [];
 		this.vitesse = vitesse;
 		this.projectiles = [];
+		this.hitbox = new Hitbox(68, 145, this.x, this.y);
 	}
 
 	incrementScore(nb) {
@@ -90,21 +92,25 @@ export class Avatar {
 		if (this.click[37]) {
 			if (this.x > 0) {
 				this.x -= this.vitesse;
+				this.hitbox.x -= this.vitesse;
 			}
 		}
 		if (this.click[39]) {
 			if (this.x < this.canvas.width - this.image.width) {
 				this.x += this.vitesse;
+				this.hitbox.x += this.vitesse;
 			}
 		}
 		if (this.click[38]) {
 			if (this.y > 0) {
 				this.y -= this.vitesse;
+				this.hitbox.y -= this.vitesse;
 			}
 		}
 		if (this.click[40]) {
 			if (this.y < this.canvas.height - this.image.height) {
 				this.y += this.vitesse;
+				this.hitbox.y += this.vitesse;
 			}
 		}
 	}

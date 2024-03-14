@@ -1,12 +1,15 @@
+import { Hitbox } from './hitbox.js';
 export class Projectile {
 	x;
 	y;
 	vitesse;
+	hitbox;
 
 	constructor(x, y) {
 		this.x = x;
 		this.y = y;
 		this.vitesse = 5;
+		this.hitbox = new Hitbox(122, 68, this.x, this.y);
 	}
 
 	getX() {
@@ -19,6 +22,7 @@ export class Projectile {
 
 	deplacer() {
 		this.x += this.vitesse;
+		this.hitbox.x += this.vitesse;
 	}
 
 	dessiner(context, image) {

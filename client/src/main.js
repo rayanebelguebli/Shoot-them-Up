@@ -109,9 +109,10 @@ setInterval(() => {
 	avatar.projectiles.forEach(projectile => projectile.deplacer());
 	enemis.forEach(enemi => {
 		enemi.x -= 8;
-		avatar.colision(enemi.x, enemi.y, imageEnemi);
+		enemi.hitbox.x -= 8;
+		avatar.colision(enemi.hitbox);
 		avatar.projectiles.forEach((projectile, index) => {
-			if (projectile.colision(enemi.x, enemi.y, imageEnemi)) {
+			if (projectile.hitbox.colision(enemi.hitbox)) {
 				enemis.splice(enemis.indexOf(enemi), 1);
 				avatar.incrementScore(5);
 			}
