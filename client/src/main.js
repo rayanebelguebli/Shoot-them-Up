@@ -2,6 +2,7 @@ import { Avatar } from './avatar.js';
 import Enemi from './enemis.js';
 import { io } from 'socket.io-client';
 import timer from './timer.js';
+import setHtml from './setHtml.js';
 
 const socket = io();
 let t = new timer();
@@ -38,31 +39,37 @@ setInterval(function () {
 	t.addTime();
 	console.log(t.getSec());
 }, 1000);
-
-startButton.addEventListener('click', startGame);
-creditsButton.addEventListener('click', afficherCredits, 50);
-
+document.querySelector('.buttonStart').addEventListener('click', startGame);
+document.querySelector('.credits').addEventListener('click', afficherCredits);
 function afficherCredits(event) {
 	event.preventDefault();
-	const buttons = document.querySelectorAll('button');
-	const title = document.querySelector('h1');
-	buttons.forEach(button => (button.style.display = 'none'));
-	title.style.display = 'none';
-	const credits = document.querySelector('.divCredits');
-	credits.style.display = '';
+	document.querySelector('.divMenu').innerHTML = setHtml.vide();
+	document.querySelector('.divFinDePartie').innerHTML = setHtml.vide();
+	document.querySelector('.divCredits').innerHTML = setHtml.credits();
 	const retour = document.querySelector('.retourMenu');
-	retour.style.display = '';
 	retour.addEventListener('click', afficherMenu);
 }
 
-function afficherMenu() {
-	const buttons = document.querySelectorAll('button');
-	const title = document.querySelector('h1');
-	buttons.forEach(button => (button.style.display = ''));
-	title.style.display = '';
-	const credits = document.querySelector('.divCredits');
-	credits.style.display = 'none';
+function afficherMenu(event) {
+	event.preventDefault();
+	document.querySelector('.divMenu').innerHTML = setHtml.menu();
+	document.querySelector('.divFinDePartie').innerHTML = setHtml.vide();
+	document.querySelector('.divCredits').innerHTML = setHtml.vide();
+	document.querySelector('.buttonStart').addEventListener('click', startGame);
+	document.querySelector('.credits').addEventListener('click', afficherCredits);
+}
+
+function afficherFinDePartie() {
 	canvas.style.display = 'none';
+	document.querySelector('.divMenu').innerHTML = setHtml.vide();
+	document.querySelector('.divCredits').innerHTML = setHtml.vide();
+	document.querySelector('.divFinDePartie').innerHTML = setHtml.finDePartie(
+		avatar,
+		t
+	);
+	document.querySelector('.divCredits').innerHTML = setHtml.vide();
+	const retour = document.querySelector('.retourMenu');
+	retour.addEventListener('click', afficherMenu);
 }
 
 function startGame(event) {
@@ -113,7 +120,7 @@ setInterval(() => {
 			avatar.perdreVie();
 			console.log(avatar.getVies());
 			if (avatar.getVies() == 0) {
-				afficherMenu();
+				afficherFinDePartie();
 				avatar.initAvatar();
 			}
 		}
