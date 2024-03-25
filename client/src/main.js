@@ -112,10 +112,10 @@ setInterval(() => {
 			enemis.splice(enemis.indexOf(enemi), 1);
 			avatar.perdreVie();
 			console.log(avatar.getVies());
-			// if (avatar.getVies() == 0) {
-			// 	afficherMenu();
-			// 	avatar.initAvatar();
-			// }
+			if (avatar.getVies() == 0) {
+				afficherMenu();
+				avatar.initAvatar();
+			}
 		}
 		enemi.x -= 8;
 		enemi.hitbox.x -= 8;
