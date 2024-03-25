@@ -112,10 +112,10 @@ setInterval(() => {
 			enemis.splice(enemis.indexOf(enemi), 1);
 			avatar.perdreVie();
 			console.log(avatar.getVies());
-			if (avatar.getVies() == 0) {
-				afficherMenu();
-				avatar.initAvatar();
-			}
+			// if (avatar.getVies() == 0) {
+			// 	afficherMenu();
+			// 	avatar.initAvatar();
+			// }
 		}
 		enemi.x -= 8;
 		enemi.hitbox.x -= 8;
@@ -138,8 +138,7 @@ setInterval(() => {
 function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-	avatar.dessinerProjectiles(context, imageProjectile);
+	avatar.dessinerProjectiles(canvas, context, imageProjectile);
 	context.drawImage(avatar.image, avatar.getX(), avatar.getY());
 
 	enemis.forEach(enemi => {
