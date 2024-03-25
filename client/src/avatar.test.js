@@ -126,3 +126,25 @@ describe('decrementScore', () => {
 		})
 	);
 });
+
+describe('decrementScore', () => {
+	if (
+		(`devrait décrementer le score du nombre pris en compte`,
+		() => {
+			const avatar = new Avatar('nom');
+			avatar.incrementScore(100);
+			avatar.decrementScore(5);
+			assert.strictEqual(avatar.getScore(), 95);
+			avatar.changerClick('keyup {key: "ArrowRight",keyCode: 39}');
+			avatar.deplacer();
+			assert.strictEqual(avatar.getX(), 3);
+			avatar.changerClick('keyup {key: "ArrowDown",keyCode: 40}');
+			avatar.deplacer();
+			assert.strictEqual(avatar.getY(), 3);
+			avatar.initAvatar();
+			assert.strictEqual(avatar.getY(), 0);
+			assert.strictEqual(avatar.getX(), 0);
+			assert.strictEqual(avatar.getScore(), 0);
+		})
+	);
+});
