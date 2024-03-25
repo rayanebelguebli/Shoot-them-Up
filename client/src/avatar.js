@@ -30,7 +30,7 @@ export class Avatar {
 	}
 
 	decrementScore(nb) {
-		this.score += nb;
+		this.score -= nb;
 	}
 
 	tirer() {

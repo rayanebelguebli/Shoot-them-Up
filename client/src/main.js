@@ -109,6 +109,11 @@ setInterval(() => {
 	avatar.deplacer();
 	avatar.projectiles.forEach(projectile => projectile.deplacer());
 	enemis.forEach(enemi => {
+		if (enemi.hitbox.colision(avatar.hitbox)) {
+			avatar.decrementScore(5);
+			enemis.splice(enemis.indexOf(enemi), 1);
+			avatar.perdreVie();
+		}
 		enemi.x -= 8;
 		enemi.hitbox.x -= 8;
 		avatar.colision(enemi.hitbox);

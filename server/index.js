@@ -2,6 +2,7 @@ import express from 'express';
 import http from 'http';
 import addWebpackMiddleware from './middlewares/addWebpackMiddleware.js';
 import { Server as IOServer } from 'socket.io';
+import { Avatar } from '../client/src/avatar.js';
 
 const app = express();
 
@@ -23,3 +24,5 @@ const port = process.env.PORT == null ? 8000 : process.env.PORT;
 httpServer.listen(port, () => {
 	console.log(`Server running at http://localhost:${port}/`);
 });
+
+const avatar = new Avatar('julien', 5);
