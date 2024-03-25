@@ -127,7 +127,7 @@ describe('decrementScore', () => {
 	);
 });
 
-describe('decrementScore', () => {
+describe('initAvatar', () => {
 	if (
 		(`devrait décrementer le score du nombre pris en compte`,
 		() => {

@@ -28,7 +28,7 @@ export class Projectile {
 	}
 
 	dessiner(canvas, context, image) {
-		draw(canvas, context, image, this.x, this.y);
+		return draw(canvas, context, image, this.x, this.y);
 	}
 
 	colision(x, y, image) {

@@ -7,8 +7,6 @@ import setHtml from './setHtml.js';
 const socket = io();
 let t = new timer();
 
-const startButton = document.querySelector('.buttonStart');
-const creditsButton = document.querySelector('.credits');
 const canvas = document.querySelector('.gameCanvas');
 const context = canvas.getContext('2d');
 const enemis = [];
@@ -18,13 +16,14 @@ const imageProjectile = new Image();
 const imageEnemi = new Image();
 const background = new Image();
 const imageCoeur = new Image();
-let spawnInterval = 3000;
+let spawnInterval = 1000;
 
 imageMortier.src = '/images/mortier.png';
 imageProjectile.src = '/images/bill.png';
 imageEnemi.src = '/images/koopa.png';
 background.src = '/images/background.webp';
 imageCoeur.src = '/images/heart.webp';
+let gameStarted = false;
 
 imageMortier.addEventListener('load', () => {
 	avatar.setImageCanvas(imageMortier, canvas);
@@ -36,11 +35,15 @@ imageEnemi.addEventListener('load', () => {
 });
 
 setInterval(function () {
-	t.addTime();
-	console.log(t.getSec());
+	if (gameStarted) {
+		t.addTime();
+		console.log(t.getSec());
+	}
 }, 1000);
+
 document.querySelector('.buttonStart').addEventListener('click', startGame);
 document.querySelector('.credits').addEventListener('click', afficherCredits);
+
 function afficherCredits(event) {
 	event.preventDefault();
 	document.querySelector('.divMenu').innerHTML = setHtml.vide();
@@ -60,6 +63,7 @@ function afficherMenu(event) {
 }
 
 function afficherFinDePartie() {
+	gameStarted = false;
 	canvas.style.display = 'none';
 	document.querySelector('.divMenu').innerHTML = setHtml.vide();
 	document.querySelector('.divCredits').innerHTML = setHtml.vide();
@@ -73,6 +77,7 @@ function afficherFinDePartie() {
 }
 
 function startGame(event) {
+	gameStarted = true;
 	event.preventDefault();
 	const buttons = document.querySelectorAll('button');
 	const title = document.querySelector('h1');
@@ -96,9 +101,7 @@ document.addEventListener('keydown', event => {
 	if (event.key === ' ') {
 		if (canshoot) {
 			avatar.tirer();
-
 			canshoot = false;
-
 			setTimeout(function () {
 				canshoot = true;
 			}, 500);
@@ -118,10 +121,10 @@ setInterval(() => {
 			avatar.decrementScore(5);
 			enemis.splice(enemis.indexOf(enemi), 1);
 			avatar.perdreVie();
-			console.log(avatar.getVies());
 			if (avatar.getVies() == 0) {
 				afficherFinDePartie();
 				avatar.initAvatar();
+				t = new timer();
 			}
 		}
 		enemi.x -= 8;
@@ -137,9 +140,11 @@ setInterval(() => {
 }, 1000 / 60);
 
 setInterval(() => {
-	const randomY = Math.random() * (canvas.height - 0) + 0;
-	const newEnemy = new Enemi('simple', 2000, randomY);
-	enemis.push(newEnemy);
+	if (gameStarted) {
+		const randomY = Math.random() * (canvas.height - 0) + 0;
+		const newEnemy = new Enemi('simple', 2000, randomY);
+		enemis.push(newEnemy);
+	}
 }, spawnInterval);
 
 function render() {
@@ -154,10 +159,6 @@ function render() {
 	context.font = '40pt New Super Mario Font U';
 	context.fillStyle = 'blue';
 	context.fillText(avatar.getScore(), 10, 50);
-	console.log(avatar.getScore());
-
-	context.font = '40pt New Super Mario Font U';
-	context.fillStyle = 'blue';
 	context.fillText(
 		t.getHrs() + ':' + t.getMin() + ':' + t.getSec(),
 		canvas.width / 2,

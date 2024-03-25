@@ -6,5 +6,6 @@ export default function draw(canvas, context, image, x, y) {
 		y >= 0
 	) {
 		context.drawImage(image, x, y);
+		return true;
 	}
 }
