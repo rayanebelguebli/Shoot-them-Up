@@ -2,7 +2,6 @@ import { Avatar } from './avatar.js';
 import Enemi from './enemis.js';
 import { io } from 'socket.io-client';
 import timer from './timer.js';
-import draw from './draw.js';
 
 const socket = io();
 let t = new timer();
@@ -56,8 +55,7 @@ function afficherCredits(event) {
 	retour.addEventListener('click', afficherMenu);
 }
 
-function afficherMenu(event) {
-	event.preventDefault();
+function afficherMenu() {
 	const buttons = document.querySelectorAll('button');
 	const title = document.querySelector('h1');
 	buttons.forEach(button => (button.style.display = ''));
@@ -113,6 +111,11 @@ setInterval(() => {
 			avatar.decrementScore(5);
 			enemis.splice(enemis.indexOf(enemi), 1);
 			avatar.perdreVie();
+			console.log(avatar.getVies());
+			if (avatar.getVies() == 0) {
+				afficherMenu();
+				avatar.initAvatar();
+			}
 		}
 		enemi.x -= 8;
 		enemi.hitbox.x -= 8;
@@ -136,11 +139,11 @@ function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-	avatar.dessinerProjectiles(canvas, context, imageProjectile);
-	draw(canvas, context, avatar.image, avatar.getX(), avatar.getY());
+	avatar.dessinerProjectiles(context, imageProjectile);
+	context.drawImage(avatar.image, avatar.getX(), avatar.getY());
 
 	enemis.forEach(enemi => {
-		draw(canvas, context, imageEnemi, enemi.x, enemi.y);
+		context.drawImage(imageEnemi, enemi.x, enemi.y);
 	});
 	context.font = '40pt New Super Mario Font U';
 	context.fillStyle = 'blue';

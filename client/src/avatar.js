@@ -123,6 +123,16 @@ export class Avatar {
 		this.vies++;
 	}
 
+	initAvatar() {
+		this.score = 0;
+		this.y = 0;
+		this.x = 0;
+		this.vies = 3;
+		this.click = [];
+		this.projectiles = [];
+		this.hitbox = new Hitbox(68, 145, this.x, this.y);
+	}
+
 	enVie() {
 		return this.vies > 0;
 	}
