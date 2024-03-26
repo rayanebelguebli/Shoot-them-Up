@@ -24,6 +24,10 @@ imageEnemi.src = '/images/koopa.png';
 background.src = '/images/background.webp';
 imageCoeur.src = '/images/heart.webp';
 let gameStarted = false;
+let LV2Started = false;
+let canShoot = true;
+let canLostLifeAvatar = true;
+let canLostLifeEnemi = true;
 
 imageMortier.addEventListener('load', () => {
 	avatar.setImageCanvas(imageMortier, canvas);
@@ -37,7 +41,6 @@ imageEnemi.addEventListener('load', () => {
 setInterval(function () {
 	if (gameStarted) {
 		t.addTime();
-		console.log(t.getSec());
 	}
 }, 1000);
 
@@ -94,17 +97,15 @@ function resampleCanvas() {
 	canvas.height = canvas.clientHeight;
 }
 
-let canshoot = true;
-
 document.addEventListener('keydown', event => {
 	avatar.changerClick(event);
 	if (event.key === ' ') {
-		if (canshoot) {
+		if (canShoot) {
 			avatar.tirer();
-			canshoot = false;
+			canShoot = false;
 			setTimeout(function () {
-				canshoot = true;
-			}, 500);
+				canShoot = true;
+			}, 100);
 		}
 	}
 });
@@ -118,57 +119,88 @@ setInterval(() => {
 	avatar.projectiles.forEach(projectile => projectile.deplacer());
 	enemis.forEach(enemi => {
 		if (enemi.hitbox.colision(avatar.hitbox)) {
-			avatar.decrementScore(5);
-			enemis.splice(enemis.indexOf(enemi), 1);
-			avatar.perdreVie();
+			if (canLostLifeAvatar) {
+				avatar.decrementScore(5);
+				enemis.splice(enemis.indexOf(enemi), 1);
+				avatar.perdreVie();
+				canLostLifeAvatar = false;
+				setTimeout(function () {
+					canLostLifeAvatar = true;
+				}, 100);
+			}
 			if (avatar.getVies() == 0) {
 				afficherFinDePartie();
 				avatar.initAvatar();
 				t = new timer();
 			}
 		}
+		if (enemi.getVies() < 0) {
+			avatar.incrementScore(5);
+
+			enemis.splice(enemis.indexOf(enemi), 1);
+		}
 		enemi.deplacer();
 		avatar.colision(enemi.hitbox);
-		avatar.projectiles.forEach((projectile, index) => {
+		avatar.projectiles.forEach(projectile => {
 			if (projectile.hitbox.colision(enemi.hitbox)) {
-				enemis.splice(enemis.indexOf(enemi), 1);
-				avatar.incrementScore(5);
+				avatar.projectiles.splice(avatar.projectiles.indexOf(projectile), 1);
+				if (canLostLifeEnemi) {
+					enemi.perdreVie();
+					canLostLifeEnemi = false;
+					setTimeout(function () {
+						canLostLifeEnemi = true;
+					}, 100);
+				}
 			}
 		});
 	});
 }, 1000 / 60);
 
-let spawnInterval = setInterval(() => {
+let spawnIntervalLV1 = setInterval(() => {
 	if (gameStarted) {
-		const randomY = Math.random() * (canvas.height - 0) + 0;
+		let randomY = Math.random() * (canvas.height - 0) + 0;
 		const newEnemy = new Enemi(
 			canvas.width - imageEnemi.width,
 			randomY,
-			imageEnemi
+			imageEnemi,
+			1
 		);
 		enemis.push(newEnemy);
 	}
-}, 1500);
+}, 1000);
+
+let spawnIntervalLV2 = setInterval(() => {
+	if (gameStarted && LV2Started) {
+		let randomY = Math.random() * (canvas.height - 0) + 0;
+		const newEnemy = new Enemi(
+			canvas.width - imageProjectile.width,
+			randomY,
+			imageProjectile,
+			2
+		);
+		enemis.push(newEnemy);
+	}
+}, 800);
 
 function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
 	avatar.dessinerProjectiles(canvas, context, imageProjectile);
 	context.drawImage(avatar.image, avatar.getX(), avatar.getY());
-	if (t.getSec() >= 15) {
+	if (t.getSec() >= 10) {
+		LV2Started = true;
 		enemis.forEach(enemi => {
 			enemi.setVx(10);
 			enemi.setVy(4);
 		});
 	}
 	enemis.forEach(enemi => {
-		console.log(enemi.getVies());
+		console.log(enemi.getDifficulte());
 		if (
 			enemi.x <= canvas.width - enemi.image.width &&
 			enemi.y <= canvas.height &&
 			enemi.x >= 0 &&
-			enemi.y >= 0 &&
-			enemi.getVies() > 0
+			enemi.y >= 0
 		) {
 			draw(canvas, context, enemi.image, enemi.x, enemi.y);
 		} else {

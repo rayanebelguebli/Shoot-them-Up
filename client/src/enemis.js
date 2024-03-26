@@ -10,18 +10,20 @@ export default class enemi {
 	amplitude;
 	direction;
 	positionInitialeY;
+	difficulté;
 
-	constructor(x, y, image) {
+	constructor(x, y, image, difficulté) {
 		this.y = y;
 		this.x = x;
 		this.vx = 8;
 		this.vy = 0;
 		this.image = image;
-		this.vies = 3;
+		this.vies = 2;
 		this.amplitude = 20;
 		this.direction = 1;
 		this.positionInitialeY = y;
-		this.hitbox = new Hitbox(69, 57, this.x, this.y);
+		this.difficulté = difficulté;
+		this.hitbox = new Hitbox(image.width, image.height, this.x, this.y);
 	}
 
 	colision(x, y, image) {
@@ -45,6 +47,10 @@ export default class enemi {
 		return this.y;
 	}
 
+	getDifficulte() {
+		return this.difficulté;
+	}
+
 	setVx(vx) {
 		this.vx = vx;
 	}
@@ -56,12 +62,13 @@ export default class enemi {
 	deplacer() {
 		this.x -= this.vx;
 		this.hitbox.x = this.x;
-
-		this.y += this.vy * this.direction;
-		if (this.y < this.positionInitialeY - this.amplitude) {
-			this.direction = 1;
-		} else if (this.y > this.positionInitialeY + this.amplitude) {
-			this.direction = -1;
+		if (this.getDifficulte() > 1) {
+			this.y += this.vy * this.direction;
+			if (this.y < this.positionInitialeY - this.amplitude) {
+				this.direction = 1;
+			} else if (this.y > this.positionInitialeY + this.amplitude) {
+				this.direction = -1;
+			}
 		}
 	}
 
