@@ -3,6 +3,7 @@ import Enemi from './enemis.js';
 import { io } from 'socket.io-client';
 import timer from './timer.js';
 import setHtml from './setHtml.js';
+import draw from './draw.js';
 
 const socket = io();
 let t = new timer();
@@ -16,7 +17,6 @@ const imageProjectile = new Image();
 const imageEnemi = new Image();
 const background = new Image();
 const imageCoeur = new Image();
-let spawnInterval = 1000;
 
 imageMortier.src = '/images/mortier.png';
 imageProjectile.src = '/images/bill.png';
@@ -127,8 +127,7 @@ setInterval(() => {
 				t = new timer();
 			}
 		}
-		enemi.x -= 8;
-		enemi.hitbox.x -= 8;
+		enemi.deplacer();
 		avatar.colision(enemi.hitbox);
 		avatar.projectiles.forEach((projectile, index) => {
 			if (projectile.hitbox.colision(enemi.hitbox)) {
@@ -139,22 +138,42 @@ setInterval(() => {
 	});
 }, 1000 / 60);
 
-setInterval(() => {
+let spawnInterval = setInterval(() => {
 	if (gameStarted) {
 		const randomY = Math.random() * (canvas.height - 0) + 0;
-		const newEnemy = new Enemi('simple', 2000, randomY);
+		const newEnemy = new Enemi(
+			canvas.width - imageEnemi.width,
+			randomY,
+			imageEnemi
+		);
 		enemis.push(newEnemy);
 	}
-}, spawnInterval);
+}, 1500);
 
 function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
 	avatar.dessinerProjectiles(canvas, context, imageProjectile);
 	context.drawImage(avatar.image, avatar.getX(), avatar.getY());
-
+	if (t.getSec() >= 15) {
+		enemis.forEach(enemi => {
+			enemi.setVx(10);
+			enemi.setVy(4);
+		});
+	}
 	enemis.forEach(enemi => {
-		context.drawImage(imageEnemi, enemi.x, enemi.y);
+		console.log(enemi.getVies());
+		if (
+			enemi.x <= canvas.width - enemi.image.width &&
+			enemi.y <= canvas.height &&
+			enemi.x >= 0 &&
+			enemi.y >= 0 &&
+			enemi.getVies() > 0
+		) {
+			draw(canvas, context, enemi.image, enemi.x, enemi.y);
+		} else {
+			enemis.splice(enemis.indexOf(enemi), 1);
+		}
 	});
 	context.font = '40pt New Super Mario Font U';
 	context.fillStyle = 'blue';
