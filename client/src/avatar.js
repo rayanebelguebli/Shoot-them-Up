@@ -26,7 +26,7 @@ export class Avatar {
 		this.vitesse = vitesse;
 		this.projectiles = [];
 		this.hitbox = new Hitbox(68, 145, this.x, this.y);
-		this.inertie = 0.6;
+		this.inertie = 0.95;
 		this.momentumX = 0;
 		this.momentumY = 0;
 	}
