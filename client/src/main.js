@@ -15,12 +15,14 @@ const avatar = new Avatar('julien', 1);
 const imageMortier = new Image();
 const imageProjectile = new Image();
 const imageEnemi = new Image();
+const imageEnemi2 = new Image();
 const background = new Image();
 const imageCoeur = new Image();
 
 imageMortier.src = '/images/mortier.png';
 imageProjectile.src = '/images/bill.png';
 imageEnemi.src = '/images/koopa.png';
+imageEnemi2.src = '/images/bob_omb.png';
 background.src = '/images/background2.webp';
 imageCoeur.src = '/images/heart.webp';
 let gameStarted = false;
@@ -163,11 +165,11 @@ let spawnIntervalLV2 = setInterval(() => {
 		let randomY = Math.random() * (canvas.height - 0) + 0;
 		do {
 			randomY = Math.random() * (canvas.height - 0) + 0;
-		} while (randomY > canvas.height - imageEnemi.height);
+		} while (randomY > canvas.height - imageEnemi2.height);
 		const newEnemy = new Enemi(
-			canvas.width - imageProjectile.width,
+			canvas.width - imageEnemi2.width,
 			randomY,
-			imageProjectile,
+			imageEnemi2,
 			2
 		);
 		enemis.push(newEnemy);
