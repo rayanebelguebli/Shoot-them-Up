@@ -80,6 +80,10 @@ export class Avatar {
 		return this.y;
 	}
 
+	getClick() {
+		return this.click;
+	}
+
 	colision(x, y, image) {
 		this.projectiles.forEach(element => {
 			if (element.colision(x, y, image)) {

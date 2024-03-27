@@ -4,7 +4,8 @@ import { Projectile } from './Projectile.js';
 
 describe('Projectile, déplacer ', () => {
 	it('devrait faire déplacer le projectile vers la droite', () => {
-		const projectile = new Projectile(0, 0);
+		const image = { width: 20, height: 20 };
+		const projectile = new Projectile(0, 0, image);
 		assert.strictEqual(projectile.getX(), 0);
 		projectile.deplacer();
 		assert.strictEqual(projectile.getX(), 5);
@@ -13,7 +14,8 @@ describe('Projectile, déplacer ', () => {
 	});
 
 	it('devrait ne pas faire déplacer le projectile en y', () => {
-		const projectile = new Projectile(0, 0);
+		const image = { width: 20, height: 20 };
+		const projectile = new Projectile(0, 0, image);
 		assert.strictEqual(projectile.getY(), 0);
 		projectile.deplacer();
 		assert.strictEqual(projectile.getY(), 0);
@@ -24,15 +26,15 @@ describe('Projectile, déplacer ', () => {
 
 describe('Test de la fonction colision', () => {
 	it("devrait retourner true si les coordonnées sont à l'intérieur de la zone de collision", () => {
-		const projectile = new Projectile(10, 10);
 		const image = { width: 20, height: 20 };
+		const projectile = new Projectile(10, 10, image);
 		const result = projectile.colision(15, 15, image);
 		assert.strictEqual(result, true);
 	});
 
 	it("devrait retourner false si les coordonnées sont à l'extérieur de la zone de collision", () => {
-		const projectile = new Projectile(10, 10);
 		const image = { width: 20, height: 20 };
+		const projectile = new Projectile(10, 10, image);
 		const result = projectile.colision(41, 41, image);
 		assert.strictEqual(result, false);
 	});
