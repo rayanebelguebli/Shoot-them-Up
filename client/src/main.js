@@ -1,5 +1,5 @@
 import { Avatar } from './avatar.js';
-import Enemi from './enemis.js';
+import Enemi from '../../server/enemis.js';
 import { io } from 'socket.io-client';
 import timer from './timer.js';
 import setHtml from './setHtml.js';
@@ -181,17 +181,20 @@ let spawnIntervalLV2 = setInterval(() => {
 	}
 }, 800);*/
 
+let newEnemis = [];
+
 function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
 	//avatar.dessinerProjectiles(canvas, context);
 	//context.drawImage(avatar.image, avatar.getX(), avatar.getY());
 	if (t.getSec() >= 10) {
-		LV2Started = true;
-		enemis.forEach(enemi => {
+		//LV2Started = true;
+		socket.emit('LVL2', true);
+		/*enemis.forEach(enemi => {
 			enemi.setVx(10);
 			enemi.setVy(4);
-		});
+		});*/
 	}
 	enemis.forEach(enemi => {
 		console.log(enemi.getDifficulte());
@@ -227,6 +230,14 @@ function render() {
 			});
 		}
 	}
+
+	socket.on('enemis', data => {
+		newEnemis = data;
+	});
+	newEnemis.forEach(enemi => {
+		//console.log(enemi);
+		context.drawImage(imageEnemi, enemi.x, enemi.y);
+	});
 
 	requestAnimationFrame(render);
 }

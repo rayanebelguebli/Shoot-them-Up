@@ -1,4 +1,4 @@
-import { Hitbox } from './hitbox.js';
+import { Hitbox } from '../client/src/hitbox.js';
 export default class enemi {
 	y;
 	x;
@@ -17,13 +17,17 @@ export default class enemi {
 		this.x = x;
 		this.image = image;
 		this.difficulté = difficulté;
-		this.vx = 8;
+		this.vx = 3;
 		this.vy = 0;
 		this.vies = 2;
 		this.amplitude = 20;
 		this.direction = 1;
 		this.positionInitialeY = y;
-		this.hitbox = new Hitbox(image.width / 2, image.height, this.x, this.y);
+		if (difficulté == 1) {
+			this.hitbox = new Hitbox(69 / 2, 57, this.x, this.y);
+		} else {
+			this.hitbox = new Hitbox(50 / 2, 66, this.x, this.y);
+		}
 	}
 
 	colision(x, y, image) {

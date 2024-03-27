@@ -21,7 +21,7 @@ export class Avatar {
 		this.score = 0;
 		this.y = 0;
 		this.x = 0;
-		this.vies = 300;
+		this.vies = 3;
 		this.click = [];
 		this.vitesse = 5;
 		this.projectiles = [];
