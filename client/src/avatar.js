@@ -42,9 +42,7 @@ export class Avatar {
 	}
 
 	tirer() {
-		const imageProjectile = new Image();
-		imageProjectile.src = '/images/bill.png';
-		let projectile = new Projectile(this.x, this.y, imageProjectile);
+		let projectile = new Projectile(this.x, this.y);
 		this.projectiles.push(projectile);
 	}
 

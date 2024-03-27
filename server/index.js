@@ -29,6 +29,7 @@ const avatars = [];
 const enemis = [];
 
 let cpt = 0;
+let canShoot = true;
 
 io.on('connection', socket => {
 	cpt++;
@@ -50,6 +51,18 @@ io.on('connection', socket => {
 		}
 	});
 
+	socket.on('shoot', shoot => {
+		const playerAvatar = avatars.find(avatar => avatar.nom === shoot.id);
+
+		if (canShoot) {
+			playerAvatar.tirer();
+			canShoot = false;
+			setTimeout(function () {
+				canShoot = true;
+			}, 500);
+		}
+	});
+
 	socket.on('canvasSize', canvasSize => {
 		avatar.canvasSize = canvasSize;
 		console.log(canvasSize);
@@ -63,12 +76,13 @@ setInterval(() => {
 	avatars.forEach(avatar => {
 		avatar.deplacer();
 		//avatar.projectiles.forEach(projectile => projectile.deplacer());
+		avatar.projectiles.forEach(projectile => projectile.deplacer());
 		avatarData.push({
 			id: avatar.id,
 			x: avatar.getX(),
 			y: avatar.getY(),
-			//projectiles: avatar.projectiles,
+			projectiles: avatar.projectiles,
 		});
 	});
-	io.emit('test', avatarData);
+	io.emit('avatarsData', avatarData);
 }, 1000 / 60);

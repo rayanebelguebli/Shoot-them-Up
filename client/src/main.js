@@ -28,7 +28,6 @@ background.src = '/images/background2.webp';
 imageCoeur.src = '/images/heart.webp';
 let gameStarted = false;
 let LV2Started = false;
-let canShoot = true;
 let canLostLifeAvatar = true;
 let canLostLifeEnemi = true;
 
@@ -91,6 +90,7 @@ function resampleCanvas() {
 }
 
 document.addEventListener('keydown', event => {
+	let canShoot = true;
 	avatar.changerClick(event);
 	if (event.key === ' ') {
 		if (canShoot) {
@@ -221,6 +221,11 @@ function render() {
 
 	for (let avatarId in avatars) {
 		context.drawImage(avatar.image, avatars[avatarId].x, avatars[avatarId].y);
+		if (avatars[avatarId].projectiles != undefined) {
+			avatars[avatarId].projectiles.forEach(projectile => {
+				context.drawImage(imageProjectile, projectile.x, projectile.y);
+			});
+		}
 	}
 
 	requestAnimationFrame(render);
@@ -233,7 +238,7 @@ socket.on('newAvatar', data => {
 	console.log(avatars[data.id]);
 });
 
-socket.on('test', avatarData => {
+socket.on('avatarsData', avatarData => {
 	avatarData.forEach(data => {
 		if (avatars[data.id] != undefined) {
 			avatars[data.id].x = data.x;
@@ -252,6 +257,12 @@ const keysPressed = {};
 
 document.addEventListener('keydown', event => {
 	keysPressed[event.keyCode] = true;
+	if (event.key === ' ') {
+		socket.emit('shoot', {
+			id: `${socket.id}`,
+			shoot: true,
+		});
+	}
 	socket.emit('clickEvent', {
 		id: `${socket.id}`,
 		key: event.keyCode,

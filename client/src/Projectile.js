@@ -5,7 +5,6 @@ export class Projectile {
 	x;
 	y;
 	vitesse;
-	image;
 	hitbox;
 
 	constructor(x, y, image) {
@@ -13,7 +12,7 @@ export class Projectile {
 		this.y = y;
 		this.vitesse = 5;
 		this.image = image;
-		this.hitbox = new Hitbox(image.width / 2, image.height, this.x, this.y);
+		this.hitbox = new Hitbox(122, 68, this.x, this.y);
 	}
 
 	getX() {
