@@ -135,7 +135,7 @@ setInterval(() => {
 					canLostLifeEnemi = false;
 					setTimeout(function () {
 						canLostLifeEnemi = true;
-					}, 100);
+					}, 1000 / 60);
 				}
 			}
 		});
@@ -145,6 +145,9 @@ setInterval(() => {
 let spawnIntervalLV1 = setInterval(() => {
 	if (gameStarted) {
 		let randomY = Math.random() * (canvas.height - 0) + 0;
+		do {
+			randomY = Math.random() * (canvas.height - 0) + 0;
+		} while (randomY > canvas.height - imageEnemi.height);
 		const newEnemy = new Enemi(
 			canvas.width - imageEnemi.width,
 			randomY,
@@ -158,6 +161,9 @@ let spawnIntervalLV1 = setInterval(() => {
 let spawnIntervalLV2 = setInterval(() => {
 	if (gameStarted && LV2Started) {
 		let randomY = Math.random() * (canvas.height - 0) + 0;
+		do {
+			randomY = Math.random() * (canvas.height - 0) + 0;
+		} while (randomY > canvas.height - imageEnemi.height);
 		const newEnemy = new Enemi(
 			canvas.width - imageProjectile.width,
 			randomY,
