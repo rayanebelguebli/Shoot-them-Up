@@ -15,14 +15,14 @@ export default class enemi {
 	constructor(x, y, image, difficulté) {
 		this.y = y;
 		this.x = x;
+		this.image = image;
+		this.difficulté = difficulté;
 		this.vx = 8;
 		this.vy = 0;
-		this.image = image;
 		this.vies = 2;
 		this.amplitude = 20;
 		this.direction = 1;
 		this.positionInitialeY = y;
-		this.difficulté = difficulté;
 		this.hitbox = new Hitbox(image.width, image.height, this.x, this.y);
 	}
 
@@ -49,6 +49,14 @@ export default class enemi {
 
 	getDifficulte() {
 		return this.difficulté;
+	}
+
+	getVx() {
+		return this.vx;
+	}
+
+	getVy() {
+		return this.vy;
 	}
 
 	setVx(vx) {
