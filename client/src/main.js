@@ -49,18 +49,14 @@ document.querySelector('.credits').addEventListener('click', afficherCredits);
 
 function afficherCredits(event) {
 	event.preventDefault();
-	document.querySelector('.divMenu').innerHTML = setHtml.vide();
-	document.querySelector('.divFinDePartie').innerHTML = setHtml.vide();
-	document.querySelector('.divCredits').innerHTML = setHtml.credits();
+	document.querySelector('.divMain').innerHTML = setHtml.credits();
 	const retour = document.querySelector('.retourMenu');
 	retour.addEventListener('click', afficherMenu);
 }
 
 function afficherMenu(event) {
 	event.preventDefault();
-	document.querySelector('.divMenu').innerHTML = setHtml.menu();
-	document.querySelector('.divFinDePartie').innerHTML = setHtml.vide();
-	document.querySelector('.divCredits').innerHTML = setHtml.vide();
+	document.querySelector('.divMain').innerHTML = setHtml.menu();
 	document.querySelector('.buttonStart').addEventListener('click', startGame);
 	document.querySelector('.credits').addEventListener('click', afficherCredits);
 }
@@ -68,13 +64,7 @@ function afficherMenu(event) {
 function afficherFinDePartie() {
 	gameStarted = false;
 	canvas.style.display = 'none';
-	document.querySelector('.divMenu').innerHTML = setHtml.vide();
-	document.querySelector('.divCredits').innerHTML = setHtml.vide();
-	document.querySelector('.divFinDePartie').innerHTML = setHtml.finDePartie(
-		avatar,
-		t
-	);
-	document.querySelector('.divCredits').innerHTML = setHtml.vide();
+	document.querySelector('.divMain').innerHTML = setHtml.finDePartie(avatar, t);
 	const retour = document.querySelector('.retourMenu');
 	retour.addEventListener('click', afficherMenu);
 }
@@ -82,11 +72,8 @@ function afficherFinDePartie() {
 function startGame(event) {
 	gameStarted = true;
 	event.preventDefault();
-	const buttons = document.querySelectorAll('button');
-	const title = document.querySelector('h1');
 	canvas.style.display = '';
-	buttons.forEach(button => (button.style.display = 'none'));
-	title.style.display = 'none';
+	document.querySelector('.divMain').innerHTML = setHtml.vide();
 }
 
 const canvasResizeObserver = new ResizeObserver(() => resampleCanvas());
