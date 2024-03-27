@@ -4,6 +4,7 @@ import { io } from 'socket.io-client';
 import timer from './timer.js';
 import setHtml from './setHtml.js';
 import draw from './draw.js';
+import { Coordinate } from './Coordinate.js';
 
 const socket = io();
 let t = new timer();
@@ -30,6 +31,9 @@ let LV2Started = false;
 let canShoot = true;
 let canLostLifeAvatar = true;
 let canLostLifeEnemi = true;
+
+const canvasSize = new Coordinate(canvas.width, canvas.height);
+socket.emit('canvasSize', canvasSize);
 
 imageMortier.addEventListener('load', () => {
 	avatar.setImageCanvas(imageMortier, canvas);
@@ -104,7 +108,7 @@ document.addEventListener('keyup', event => {
 });
 
 setInterval(() => {
-	avatar.deplacer();
+	/*avatar.deplacer();
 	avatar.projectiles.forEach(projectile => projectile.deplacer());
 	enemis.forEach(enemi => {
 		if (enemi.hitbox.colision(avatar.hitbox)) {
@@ -141,9 +145,10 @@ setInterval(() => {
 				}
 			}
 		});
-	});
+	});*/
 }, 1000 / 60);
 
+/*
 let spawnIntervalLV1 = setInterval(() => {
 	if (gameStarted) {
 		let randomY = Math.random() * (canvas.height - 0) + 0;
@@ -174,13 +179,13 @@ let spawnIntervalLV2 = setInterval(() => {
 		);
 		enemis.push(newEnemy);
 	}
-}, 800);
+}, 800);*/
 
 function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
-	avatar.dessinerProjectiles(canvas, context);
-	context.drawImage(avatar.image, avatar.getX(), avatar.getY());
+	//avatar.dessinerProjectiles(canvas, context);
+	//context.drawImage(avatar.image, avatar.getX(), avatar.getY());
 	if (t.getSec() >= 10) {
 		LV2Started = true;
 		enemis.forEach(enemi => {
@@ -214,13 +219,59 @@ function render() {
 		context.drawImage(imageCoeur, canvas.width - (3 - i) * 50, 0, 50, 50);
 	}
 
+	for (let avatarId in avatars) {
+		context.drawImage(avatar.image, avatars[avatarId].x, avatars[avatarId].y);
+	}
+
 	requestAnimationFrame(render);
 }
 
-io.on('connection', socket => {
-	console.log(`Nouvelle connexion du client ${socket.id}`);
+let avatars = [];
 
-	socket.on('disconnect', () => {
-		console.log(`Déconnexion du client ${socket.id}`);
+socket.on('newAvatar', data => {
+	avatars[data.id] = { x: data.x, y: data.y };
+	console.log(avatars[data.id]);
+});
+
+socket.on('test', avatarData => {
+	avatarData.forEach(data => {
+		if (avatars[data.id] != undefined) {
+			avatars[data.id].x = data.x;
+			avatars[data.id].y = data.y;
+			avatars[data.id].projectiles = data.projectiles;
+		} else {
+			avatars[data.id] = {
+				x: data.x,
+				y: data.y,
+				projectiles: data.projectiles,
+			};
+		}
 	});
 });
+const keysPressed = {};
+
+document.addEventListener('keydown', event => {
+	keysPressed[event.keyCode] = true;
+	socket.emit('clickEvent', {
+		id: `${socket.id}`,
+		key: event.keyCode,
+		pressed: true,
+	});
+	event.preventDefault();
+});
+
+document.addEventListener('keyup', event => {
+	keysPressed[event.keyCode] = false;
+
+	socket.emit('clickEvent', {
+		id: `${socket.id}`,
+		key: event.keyCode,
+		pressed: false,
+	});
+
+	event.preventDefault();
+});
+
+function isKeyPressed(keyCode) {
+	return !!keysPressed[keyCode];
+}

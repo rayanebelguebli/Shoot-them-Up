@@ -8,7 +8,7 @@ export class Avatar {
 	click;
 	vitesse;
 	image;
-	canvas;
+	canvasSize;
 	projectiles;
 	score;
 	hitbox;
@@ -16,19 +16,21 @@ export class Avatar {
 	momentumX;
 	momentumY;
 
-	constructor(nom, vitesse) {
+	constructor(nom, id, canvasSize) {
 		this.nom = nom;
 		this.score = 0;
 		this.y = 0;
 		this.x = 0;
-		this.vies = 3;
+		this.vies = 300;
 		this.click = [];
-		this.vitesse = vitesse;
+		this.vitesse = 5;
 		this.projectiles = [];
 		this.hitbox = new Hitbox(68, 145, this.x, this.y);
 		this.inertie = 0.95;
 		this.momentumX = 0;
 		this.momentumY = 0;
+		this.canvasSize = canvasSize;
+		this.id = id;
 	}
 
 	incrementScore(nb) {
@@ -104,43 +106,29 @@ export class Avatar {
 
 	deplacer() {
 		if (this.click[37]) {
-			if (this.x > 0) {
-				this.momentumX -= this.vitesse;
-			}
+			//if (this.x > 0) {
+			this.x -= this.vitesse;
+			this.hitbox.x -= this.vitesse;
+			//}
 		}
 		if (this.click[39]) {
-			if (this.x < this.canvas.width - this.image.width) {
-				this.momentumX += this.vitesse;
-			}
+			//if (this.x < this.canvas.width - this.image.width) {
+			this.x += this.vitesse;
+			this.hitbox.x += this.vitesse;
+			//}
 		}
 		if (this.click[38]) {
-			if (this.y > 0) {
-				this.momentumY -= this.vitesse;
-			}
+			//if (this.y > 0) {
+			this.y -= this.vitesse;
+			this.hitbox.y -= this.vitesse;
+			//}
 		}
 		if (this.click[40]) {
-			if (this.y < this.canvas.height - this.image.height) {
-				this.momentumY += this.vitesse;
-			}
+			//if (this.y < this.canvas.height - this.image.height) {
+			this.y += this.vitesse;
+			this.hitbox.y += this.vitesse;
+			//	}
 		}
-		if (
-			(this.x >= 0 && this.momentumX <= 0) ||
-			(this.x <= this.canvas.width - this.image.width && this.momentumX >= 0)
-		) {
-			this.x += this.momentumX;
-			this.hitbox.x = this.x;
-		}
-
-		if (
-			(this.y >= 0 && this.momentumY <= 0) ||
-			(this.y <= this.canvas.height - this.image.height && this.momentumY >= 0)
-		) {
-			this.y += this.momentumY;
-			this.hitbox.y = this.y;
-		}
-
-		this.momentumX *= this.inertie;
-		this.momentumY *= this.inertie;
 	}
 
 	perdreVie() {
