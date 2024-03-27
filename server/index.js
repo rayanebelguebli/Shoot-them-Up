@@ -4,13 +4,22 @@ import addWebpackMiddleware from './middlewares/addWebpackMiddleware.js';
 import { Server as IOServer } from 'socket.io';
 import { Avatar } from '../client/src/avatar.js';
 import enemi from './enemis.js';
+import { Coordinate } from '../client/src/Coordinate.js';
+import timer from '../client/src/timer.js';
 
 const app = express();
 
-let canvasSize;
+let canvasSize=new Coordinate(1920,1261);
 
 let canLostLifeAvatar = true;
 let canLostLifeEnemi = true;
+
+let t = new timer();
+
+setInterval(function () {
+	t.addTime();
+}, 1000);
+
 
 const httpServer = http.createServer(app);
 const fileOptions = { root: process.cwd() };
@@ -72,6 +81,7 @@ io.on('connection', socket => {
 
 	socket.on('LVL2', LVL2start => {
 		LVL2start = true;
+		//console.log(LVL2start);
 	});
 
 	socket.on('canvasSize', canvasSize => {
@@ -81,21 +91,26 @@ io.on('connection', socket => {
 });
 
 let spawnIntervalLV1 = setInterval(() => {
-	let randomY = Math.random() * (150 - 0) + 0;
+
+	if(t.getMin()>1){
+		LVL2start=true;
+	}
+
+	let randomY = Math.random() * (canvasSize.height - 0) + 0;
 	do {
-		randomY = Math.random() * (150 - 0) + 0;
-	} while (randomY > 300 - 57);
-	const newEnemy = new enemi(1500 - 69, randomY, 0, 1);
+		randomY = Math.random() * (canvasSize.height - 0) + 0;
+	} while (randomY > canvasSize.height - 57);
+	const newEnemy = new enemi(canvasSize.width, randomY, 0, 1);
 	enemis.push(newEnemy);
 }, 1000);
 
 let spawnIntervalLV2 = setInterval(() => {
 	if (LVL2start) {
-		let randomY = Math.random() * (1500 - 0) + 0;
+		let randomY = Math.random() * (canvasSize.height - 0) + 0;
 		do {
-			randomY = Math.random() * (canvas.height - 0) + 0;
-		} while (randomY > 1500 - 100);
-		const newEnemy = new enemi(1500 - 100, randomY, 1, 2);
+			randomY = Math.random() * (canvasSize.height - 0) + 0;
+		} while (randomY > canvasSize.height - 100);
+		const newEnemy = new enemi(canvasSize.width-100 , randomY, 1, 2);
 		enemis.push(newEnemy);
 	}
 }, 800);
@@ -107,7 +122,7 @@ setInterval(() => {
 	avatars.forEach(avatar => {
 		enemis.forEach(enemi => {
 			if (LVL2start) {
-				console.log('ouais');
+	
 				enemi.setVx(10);
 				enemi.setVy(4);
 			}

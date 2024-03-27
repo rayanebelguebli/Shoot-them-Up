@@ -7,5 +7,7 @@ export default function draw(canvas, context, image, x, y) {
 	) {
 		context.drawImage(image, x, y);
 		return true;
+	}else{
+		return false;
 	}
 }

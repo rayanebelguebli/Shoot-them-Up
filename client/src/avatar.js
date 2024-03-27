@@ -87,9 +87,9 @@ export class Avatar {
 	colision(x, y, image) {
 		this.projectiles.forEach(element => {
 			if (element.colision(x, y, image)) {
-				console.log('colision');
+				//console.log('colision');
 			} else {
-				console.log('pas colison');
+				//console.log('pas colison');
 			}
 		});
 	}

@@ -31,8 +31,7 @@ let LV2Started = false;
 let canLostLifeAvatar = true;
 let canLostLifeEnemi = true;
 
-const canvasSize = new Coordinate(canvas.width, canvas.height);
-socket.emit('canvasSize', canvasSize);
+
 
 imageMortier.addEventListener('load', () => {
 	avatar.setImageCanvas(imageMortier, canvas);
@@ -79,15 +78,20 @@ function startGame(event) {
 	event.preventDefault();
 	canvas.style.display = '';
 	document.querySelector('.divMain').innerHTML = setHtml.vide();
+	const canvasSize = new Coordinate(canvas.clientWidth, canvas.clientHeight);
+	socket.emit('canvasSize', canvasSize);
 }
 
 const canvasResizeObserver = new ResizeObserver(() => resampleCanvas());
 canvasResizeObserver.observe(canvas);
 
+
 function resampleCanvas() {
 	canvas.width = canvas.clientWidth;
 	canvas.height = canvas.clientHeight;
 }
+
+
 
 document.addEventListener('keydown', event => {
 	let canShoot = true;
@@ -107,94 +111,18 @@ document.addEventListener('keyup', event => {
 	avatar.changerClick(event);
 });
 
-setInterval(() => {
-	/*avatar.deplacer();
-	avatar.projectiles.forEach(projectile => projectile.deplacer());
-	enemis.forEach(enemi => {
-		if (enemi.hitbox.colision(avatar.hitbox)) {
-			if (canLostLifeAvatar) {
-				avatar.decrementScore(5);
-				enemis.splice(enemis.indexOf(enemi), 1);
-				avatar.perdreVie();
-				canLostLifeAvatar = false;
-				setTimeout(function () {
-					canLostLifeAvatar = true;
-				}, 100);
-			}
-			if (avatar.getVies() == 0) {
-				afficherFinDePartie();
-				avatar.initAvatar();
-				t = new timer();
-			}
-		}
-		if (enemi.getVies() < 0) {
-			avatar.incrementScore(5);
-			enemis.splice(enemis.indexOf(enemi), 1);
-		}
-		enemi.deplacer();
-		avatar.colision(enemi.hitbox);
-		avatar.projectiles.forEach(projectile => {
-			if (projectile.hitbox.colision(enemi.hitbox)) {
-				avatar.projectiles.splice(avatar.projectiles.indexOf(projectile), 1);
-				if (canLostLifeEnemi) {
-					enemi.perdreVie();
-					canLostLifeEnemi = false;
-					setTimeout(function () {
-						canLostLifeEnemi = true;
-					}, 1000 / 60);
-				}
-			}
-		});
-	});*/
-}, 1000 / 60);
 
-/*
-let spawnIntervalLV1 = setInterval(() => {
-	if (gameStarted) {
-		let randomY = Math.random() * (canvas.height - 0) + 0;
-		do {
-			randomY = Math.random() * (canvas.height - 0) + 0;
-		} while (randomY > canvas.height - imageEnemi.height);
-		const newEnemy = new Enemi(
-			canvas.width - imageEnemi.width,
-			randomY,
-			imageEnemi,
-			1
-		);
-		enemis.push(newEnemy);
-	}
-}, 1000);
 
-let spawnIntervalLV2 = setInterval(() => {
-	if (gameStarted && LV2Started) {
-		let randomY = Math.random() * (canvas.height - 0) + 0;
-		do {
-			randomY = Math.random() * (canvas.height - 0) + 0;
-		} while (randomY > canvas.height - imageEnemi2.height);
-		const newEnemy = new Enemi(
-			canvas.width - imageEnemi2.width,
-			randomY,
-			imageEnemi2,
-			2
-		);
-		enemis.push(newEnemy);
-	}
-}, 800);*/
 
 let newEnemis = [];
 
 function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
-	//avatar.dessinerProjectiles(canvas, context);
-	//context.drawImage(avatar.image, avatar.getX(), avatar.getY());
+	console.log(canvas.width);
+	
 	if (t.getSec() >= 10) {
-		//LV2Started = true;
 		socket.emit('LVL2', true);
-		/*enemis.forEach(enemi => {
-			enemi.setVx(10);
-			enemi.setVy(4);
-		});*/
 	}
 	enemis.forEach(enemi => {
 		console.log(enemi.getDifficulte());
@@ -230,12 +158,10 @@ function render() {
 			});
 		}
 	}
-
 	socket.on('enemis', data => {
 		newEnemis = data;
 	});
 	newEnemis.forEach(enemi => {
-		//console.log(enemi);
 		context.drawImage(imageEnemi, enemi.x, enemi.y);
 	});
 
@@ -246,7 +172,6 @@ let avatars = [];
 
 socket.on('newAvatar', data => {
 	avatars[data.id] = { x: data.x, y: data.y };
-	console.log(avatars[data.id]);
 });
 
 socket.on('avatarsData', avatarData => {
@@ -293,7 +218,4 @@ document.addEventListener('keyup', event => {
 
 	event.preventDefault();
 });
-
-function isKeyPressed(keyCode) {
-	return !!keysPressed[keyCode];
-}
+console.log(canvas.width);
