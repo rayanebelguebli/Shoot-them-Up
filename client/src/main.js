@@ -123,7 +123,6 @@ setInterval(() => {
 		}
 		if (enemi.getVies() < 0) {
 			avatar.incrementScore(5);
-
 			enemis.splice(enemis.indexOf(enemi), 1);
 		}
 		enemi.deplacer();
@@ -172,7 +171,7 @@ let spawnIntervalLV2 = setInterval(() => {
 function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
-	avatar.dessinerProjectiles(canvas, context, imageProjectile);
+	avatar.dessinerProjectiles(canvas, context);
 	context.drawImage(avatar.image, avatar.getX(), avatar.getY());
 	if (t.getSec() >= 10) {
 		LV2Started = true;

@@ -5,13 +5,15 @@ export class Projectile {
 	x;
 	y;
 	vitesse;
+	image;
 	hitbox;
 
-	constructor(x, y) {
+	constructor(x, y, image) {
 		this.x = x;
 		this.y = y;
 		this.vitesse = 5;
-		this.hitbox = new Hitbox(122, 68, this.x, this.y);
+		this.image = image;
+		this.hitbox = new Hitbox(image.width / 2, image.height, this.x, this.y);
 	}
 
 	getX() {
@@ -27,8 +29,8 @@ export class Projectile {
 		this.hitbox.x += this.vitesse;
 	}
 
-	dessiner(canvas, context, image) {
-		return draw(canvas, context, image, this.x, this.y);
+	dessiner(canvas, context) {
+		return draw(canvas, context, this.image, this.x, this.y);
 	}
 
 	colision(x, y, image) {

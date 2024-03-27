@@ -23,7 +23,7 @@ export default class enemi {
 		this.amplitude = 20;
 		this.direction = 1;
 		this.positionInitialeY = y;
-		this.hitbox = new Hitbox(image.width, image.height, this.x, this.y);
+		this.hitbox = new Hitbox(image.width / 2, image.height, this.x, this.y);
 	}
 
 	colision(x, y, image) {

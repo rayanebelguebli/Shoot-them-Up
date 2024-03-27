@@ -40,13 +40,15 @@ export class Avatar {
 	}
 
 	tirer() {
-		let projectile = new Projectile(this.x, this.y);
+		const imageProjectile = new Image();
+		imageProjectile.src = '/images/bill.png';
+		let projectile = new Projectile(this.x, this.y, imageProjectile);
 		this.projectiles.push(projectile);
 	}
 
-	dessinerProjectiles(canvas, context, imageProjectile) {
+	dessinerProjectiles(canvas, context) {
 		this.projectiles.forEach(projectile => {
-			if (!projectile.dessiner(canvas, context, imageProjectile)) {
+			if (!projectile.dessiner(canvas, context)) {
 				this.projectiles.splice(this.projectiles.indexOf(projectile), 1);
 			}
 			projectile.deplacer();
