@@ -5,7 +5,7 @@ import { Server as IOServer } from 'socket.io';
 import { Avatar } from '../client/src/avatar.js';
 import enemi from './enemis.js';
 import { Coordinate } from '../client/src/Coordinate.js';
-import timer from '../client/src/timer.js';
+import timer from './timer.js';
 
 const app = express();
 
@@ -15,10 +15,6 @@ let canLostLifeAvatar = true;
 let canLostLifeEnemi = true;
 
 let t = new timer();
-
-setInterval(function () {
-	t.addTime();
-}, 1000);
 
 
 const httpServer = http.createServer(app);
@@ -39,6 +35,13 @@ const port = process.env.PORT == null ? 8000 : process.env.PORT;
 httpServer.listen(port, () => {
 	console.log(`Server running at http://localhost:${port}/`);
 });
+
+
+setInterval(function () {
+	t.addTime();
+	io.emit("timer",t.getMin(),t.getSec());
+}, 1000);
+
 
 const avatars = [];
 const enemis = [];

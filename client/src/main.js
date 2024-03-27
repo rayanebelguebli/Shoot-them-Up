@@ -1,13 +1,14 @@
 import { Avatar } from './avatar.js';
 import Enemi from '../../server/enemis.js';
 import { io } from 'socket.io-client';
-import timer from './timer.js';
+import timer from '../../server/timer.js';
 import setHtml from './setHtml.js';
 import draw from './draw.js';
 import { Coordinate } from './Coordinate.js';
 
 const socket = io();
-let t = new timer();
+let min =0;
+let sec=0;
 
 const canvas = document.querySelector('.gameCanvas');
 const context = canvas.getContext('2d');
@@ -43,9 +44,10 @@ imageEnemi.addEventListener('load', () => {
 });
 
 setInterval(function () {
-	if (gameStarted) {
-		t.addTime();
-	}
+	socket.on("timer",(minute,seconde)=>{
+		min=minute;
+		sec=seconde;
+	});
 }, 1000);
 
 document.querySelector('.buttonStart').addEventListener('click', startGame);
@@ -117,13 +119,12 @@ document.addEventListener('keyup', event => {
 let newEnemis = [];
 
 function render() {
+	console.log(sec);
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
-	console.log(canvas.width);
 	
-	if (t.getSec() >= 10) {
-		socket.emit('LVL2', true);
-	}
+	
+	
 	enemis.forEach(enemi => {
 		console.log(enemi.getDifficulte());
 		if (
@@ -141,7 +142,7 @@ function render() {
 	context.fillStyle = 'blue';
 	context.fillText(avatar.getScore(), 10, 50);
 	context.fillText(
-		t.getHrs() + ':' + t.getMin() + ':' + t.getSec(),
+		0 + ':' + min + ':' + sec,
 		canvas.width / 2,
 		50
 	);
