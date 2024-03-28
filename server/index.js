@@ -6,6 +6,12 @@ import { Avatar } from '../client/src/avatar.js';
 import enemi from './enemis.js';
 import { Coordinate } from '../client/src/Coordinate.js';
 import timer from './timer.js';
+import Bonus from './bonus.js';
+import {
+	bonusImages,
+	bonusNoms,
+	bonusTaille,
+} from '../client/src/choixBonus.js';
 
 const app = express();
 
@@ -42,6 +48,7 @@ setInterval(function () {
 
 const avatars = [];
 const enemis = [];
+const bonusArray = [];
 
 let cpt = 0;
 let canShoot = true;
@@ -116,8 +123,20 @@ let spawnIntervalLV2 = setInterval(() => {
 	}
 }, 800);
 
+let spawnBonusInterval = setInterval(() => {
+	const choix = Math.floor(Math.random() * bonusNoms.length);
+	let randomY = Math.floor(Math.random() * canvasSize.height);
+	let randomX = Math.floor(Math.random() * canvasSize.width);
+	let img = new Image();
+	img.width = 75;
+	img.height = 75;
+	const bonus = new Bonus(choix, 1, randomX, randomY, img, t.getTotalTime());
+	bonusArray.push(bonus);
+}, 15000);
+
 setInterval(() => {
 	io.emit('enemis', enemis);
+	io.emit('bonusArray', bonusArray);
 
 	let avatarData = [];
 	avatars.forEach(avatar => {
@@ -165,6 +184,20 @@ setInterval(() => {
 			x: avatar.getX(),
 			y: avatar.getY(),
 			projectiles: avatar.projectiles,
+		});
+		bonusArray.forEach(bonus => {
+			if (bonus.hitbox.colision(avatar.hitbox)) {
+				if (bonusNoms[bonus.getChoix()] == 'vie') {
+					avatar.gagnerVie();
+				} else if (bonusNoms[bonus.getChoix()] == 'invincibilite') {
+					avatar.setStatut('invincibilite');
+					avatar.setStatutTime(t.getTotalTime());
+				}
+				bonusArray.splice(bonusArray.indexOf(bonus), 1);
+			}
+			if (bonus.estExpire(t.getTotalTime())) {
+				bonusArray.splice(bonusArray.indexOf(bonus), 1);
+			}
 		});
 	});
 	io.emit('avatarsData', avatarData);

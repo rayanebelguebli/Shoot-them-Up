@@ -7,8 +7,8 @@ import draw from './draw.js';
 import { Coordinate } from './Coordinate.js';
 
 const socket = io();
-let min =0;
-let sec=0;
+let min = 0;
+let sec = 0;
 
 const canvas = document.querySelector('.gameCanvas');
 const context = canvas.getContext('2d');
@@ -32,8 +32,6 @@ let LV2Started = false;
 let canLostLifeAvatar = true;
 let canLostLifeEnemi = true;
 
-
-
 imageMortier.addEventListener('load', () => {
 	avatar.setImageCanvas(imageMortier, canvas);
 	requestAnimationFrame(render);
@@ -44,9 +42,9 @@ imageEnemi.addEventListener('load', () => {
 });
 
 setInterval(function () {
-	socket.on("timer",(minute,seconde)=>{
-		min=minute;
-		sec=seconde;
+	socket.on('timer', (minute, seconde) => {
+		min = minute;
+		sec = seconde;
 	});
 }, 1000);
 
@@ -89,13 +87,10 @@ function startGame(event) {
 const canvasResizeObserver = new ResizeObserver(() => resampleCanvas());
 canvasResizeObserver.observe(canvas);
 
-
 function resampleCanvas() {
 	canvas.width = canvas.clientWidth;
 	canvas.height = canvas.clientHeight;
 }
-
-
 
 document.addEventListener('keydown', event => {
 	let canShoot = true;
@@ -115,10 +110,8 @@ document.addEventListener('keyup', event => {
 	avatar.changerClick(event);
 });
 
-
-
-
 let newEnemis = [];
+let newBonus = [];
 
 function render() {
 	console.log(sec);
@@ -128,11 +121,7 @@ function render() {
 	context.font = '40pt New Super Mario Font U';
 	context.fillStyle = 'blue';
 	context.fillText(avatar.getScore(), 10, 50);
-	context.fillText(
-		0 + ':' + min + ':' + sec,
-		canvas.width / 2,
-		50
-	);
+	context.fillText(0 + ':' + min + ':' + sec, canvas.width / 2, 50);
 
 	for (let i = 0; i < avatar.getVies(); i++) {
 		context.drawImage(imageCoeur, canvas.width - (3 - i) * 50, 0, 50, 50);
@@ -155,6 +144,12 @@ function render() {
 		} else if (enemi.difficulté == 2) {
 			draw(canvas, context, imageEnemi2, enemi.x, enemi.y);
 		}
+	});
+	socket.on('bonusArray', data => {
+		newBonus = data;
+	});
+	newBonus.forEach(bonus => {
+		draw(canvas, context, bonus.getImage(), bonus.getX(), bonus.getY());
 	});
 
 	requestAnimationFrame(render);

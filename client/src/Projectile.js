@@ -1,26 +1,13 @@
 import { Hitbox } from './hitbox.js';
 import draw from './draw.js';
+import Entite from './entite.js';
 
-export class Projectile {
-	x;
-	y;
+export class Projectile extends Entite {
 	vitesse;
-	hitbox;
 
 	constructor(x, y, image) {
-		this.x = x;
-		this.y = y;
+		super(x, y, new Hitbox(122, 68, x, y), image);
 		this.vitesse = 10;
-		this.image = image;
-		this.hitbox = new Hitbox(122, 68, this.x, this.y);
-	}
-
-	getX() {
-		return this.x;
-	}
-
-	getY() {
-		return this.y;
 	}
 
 	deplacer() {

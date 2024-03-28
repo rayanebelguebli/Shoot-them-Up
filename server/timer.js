@@ -27,4 +27,8 @@ export default class timer {
 	getHrs() {
 		return this.hrs;
 	}
+
+	getTotalTime() {
+		return this.hrs * 3600 + this.min * 60 + this.sec;
+	}
 }
