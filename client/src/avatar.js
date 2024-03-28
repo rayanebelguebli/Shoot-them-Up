@@ -12,6 +12,8 @@ export class Avatar extends Entite {
 	inertie;
 	momentumX;
 	momentumY;
+	statut;
+	statutTime;
 
 	constructor(nom, id, canvasSize) {
 		super(0, 0, new Hitbox(68, 145, 0, 0), null);
@@ -69,6 +71,22 @@ export class Avatar extends Entite {
 
 	getClick() {
 		return this.click;
+	}
+
+	setStatut(statut) {
+		this.statut = statut;
+	}
+
+	setStatutTime(statutTime) {
+		this.statutTime = statutTime;
+	}
+
+	getStatut() {
+		return this.statut;
+	}
+
+	getStatutTime() {
+		return this.statutTime;
 	}
 
 	colision(x, y, image) {

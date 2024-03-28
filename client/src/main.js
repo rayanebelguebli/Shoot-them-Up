@@ -5,6 +5,8 @@ import timer from '../../server/timer.js';
 import setHtml from './setHtml.js';
 import draw from './draw.js';
 import { Coordinate } from './Coordinate.js';
+import { bonusImages } from './choixBonus.js';
+import Bonus from '../../server/bonus.js';
 
 const socket = io();
 let min = 0;
@@ -149,7 +151,12 @@ function render() {
 		newBonus = data;
 	});
 	newBonus.forEach(bonus => {
-		draw(canvas, context, bonus.getImage(), bonus.getX(), bonus.getY());
+		console.log(bonus);
+		let img = new Image();
+		img.src = bonusImages[bonus.choix];
+		img.width = 75;
+		img.height = 75;
+		draw(canvas, context, img, bonus.x, bonus.y);
 	});
 
 	requestAnimationFrame(render);

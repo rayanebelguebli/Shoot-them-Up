@@ -124,13 +124,16 @@ let spawnIntervalLV2 = setInterval(() => {
 }, 800);
 
 let spawnBonusInterval = setInterval(() => {
+	let randomX;
+	let randomY;
 	const choix = Math.floor(Math.random() * bonusNoms.length);
-	let randomY = Math.floor(Math.random() * canvasSize.height);
-	let randomX = Math.floor(Math.random() * canvasSize.width);
-	let img = new Image();
-	img.width = 75;
-	img.height = 75;
-	const bonus = new Bonus(choix, 1, randomX, randomY, img, t.getTotalTime());
+	do {
+		randomY = Math.random() * (canvasSize.height - 0) + 0;
+	} while (randomY > canvasSize.height - 75);
+	do {
+		randomX = Math.random() * (canvasSize.width - 0) + 0;
+	} while (randomX > canvasSize.width - 75);
+	const bonus = new Bonus(choix, 1, randomX, randomY, t.getTotalTime());
 	bonusArray.push(bonus);
 }, 15000);
 
@@ -141,8 +144,17 @@ setInterval(() => {
 	let avatarData = [];
 	avatars.forEach(avatar => {
 		avatar.canvasSize = canvasSize;
+		if (
+			avatar.getStatut() == 'invincibilite' &&
+			t.getTotalTime() - avatar.getStatutTime() == 15
+		) {
+			avatar.setStatut('null');
+		}
 		enemis.forEach(enemi => {
-			if (enemi.hitbox.colision(avatar.hitbox)) {
+			if (
+				enemi.hitbox.colision(avatar.hitbox) &&
+				avatar.getStatut() != 'invincibilite'
+			) {
 				if (canLostLifeAvatar) {
 					avatar.decrementScore(5);
 					enemis.splice(enemis.indexOf(enemi), 1);
