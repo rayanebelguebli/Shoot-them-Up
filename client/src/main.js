@@ -70,6 +70,7 @@ function afficherMenu(event) {
 function afficherFinDePartie() {
 	gameStarted = false;
 	canvas.style.display = 'none';
+	document.querySelector('.animation').style.display = '';
 	document.querySelector('.divMain').innerHTML = setHtml.finDePartie(avatar, t);
 	const retour = document.querySelector('.retourMenu');
 	retour.addEventListener('click', afficherMenu);
@@ -80,6 +81,7 @@ function startGame(event) {
 	event.preventDefault();
 	canvas.style.display = '';
 	document.querySelector('.divMain').innerHTML = setHtml.vide();
+	document.querySelector('.animation').style.display = 'none';
 	const canvasSize = new Coordinate(canvas.clientWidth, canvas.clientHeight);
 	socket.emit('canvasSize', canvasSize);
 }
