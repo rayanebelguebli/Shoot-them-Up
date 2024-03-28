@@ -9,13 +9,12 @@ import timer from './timer.js';
 
 const app = express();
 
-let canvasSize=new Coordinate(1920,1261);
+let canvasSize = new Coordinate(1920, 1261);
 
 let canLostLifeAvatar = true;
 let canLostLifeEnemi = true;
 
 let t = new timer();
-
 
 const httpServer = http.createServer(app);
 const fileOptions = { root: process.cwd() };
@@ -36,12 +35,10 @@ httpServer.listen(port, () => {
 	console.log(`Server running at http://localhost:${port}/`);
 });
 
-
 setInterval(function () {
 	t.addTime();
-	io.emit("timer",t.getMin(),t.getSec());
+	io.emit('timer', t.getMin(), t.getSec());
 }, 1000);
-
 
 const avatars = [];
 const enemis = [];
@@ -94,9 +91,8 @@ io.on('connection', socket => {
 });
 
 let spawnIntervalLV1 = setInterval(() => {
-
-	if(t.getMin()>1){
-		LVL2start=true;
+	if (t.getMin() > 1) {
+		LVL2start = true;
 	}
 
 	let randomY = Math.random() * (canvasSize.height - 0) + 0;
@@ -113,7 +109,7 @@ let spawnIntervalLV2 = setInterval(() => {
 		do {
 			randomY = Math.random() * (canvasSize.height - 0) + 0;
 		} while (randomY > canvasSize.height - 100);
-		const newEnemy = new enemi(canvasSize.width-100 , randomY, 1, 2);
+		const newEnemy = new enemi(canvasSize.width - 100, randomY, 1, 2);
 		enemis.push(newEnemy);
 	}
 }, 800);
@@ -123,9 +119,9 @@ setInterval(() => {
 
 	let avatarData = [];
 	avatars.forEach(avatar => {
+		avatar.canvasSize = canvasSize;
 		enemis.forEach(enemi => {
 			if (LVL2start) {
-	
 				enemi.setVx(10);
 				enemi.setVy(4);
 			}
