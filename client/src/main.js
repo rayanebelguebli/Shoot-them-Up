@@ -124,22 +124,7 @@ function render() {
 	console.log(sec);
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
-	
-	
-	
-	enemis.forEach(enemi => {
-		console.log(enemi.getDifficulte());
-		if (
-			enemi.x <= canvas.width - enemi.image.width &&
-			enemi.y <= canvas.height &&
-			enemi.x >= 0 &&
-			enemi.y >= 0
-		) {
-			draw(canvas, context, enemi.image, enemi.x, enemi.y);
-		} else {
-			enemis.splice(enemis.indexOf(enemi), 1);
-		}
-	});
+
 	context.font = '40pt New Super Mario Font U';
 	context.fillStyle = 'blue';
 	context.fillText(avatar.getScore(), 10, 50);
@@ -165,7 +150,11 @@ function render() {
 		newEnemis = data;
 	});
 	newEnemis.forEach(enemi => {
-		context.drawImage(imageEnemi, enemi.x, enemi.y);
+		if (enemi.difficulté == 1) {
+			draw(canvas, context, imageEnemi, enemi.x, enemi.y);
+		} else if (enemi.difficulté == 2) {
+			draw(canvas, context, imageEnemi2, enemi.x, enemi.y);
+		}
 	});
 
 	requestAnimationFrame(render);

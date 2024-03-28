@@ -91,7 +91,7 @@ io.on('connection', socket => {
 });
 
 let spawnIntervalLV1 = setInterval(() => {
-	if (t.getMin() > 1) {
+	if (t.getSec() >= 10) {
 		LVL2start = true;
 	}
 
@@ -110,6 +110,8 @@ let spawnIntervalLV2 = setInterval(() => {
 			randomY = Math.random() * (canvasSize.height - 0) + 0;
 		} while (randomY > canvasSize.height - 100);
 		const newEnemy = new enemi(canvasSize.width - 100, randomY, 1, 2);
+		newEnemy.setVx(10);
+		newEnemy.setVy(4);
 		enemis.push(newEnemy);
 	}
 }, 800);
@@ -121,10 +123,6 @@ setInterval(() => {
 	avatars.forEach(avatar => {
 		avatar.canvasSize = canvasSize;
 		enemis.forEach(enemi => {
-			if (LVL2start) {
-				enemi.setVx(10);
-				enemi.setVy(4);
-			}
 			if (enemi.hitbox.colision(avatar.hitbox)) {
 				if (canLostLifeAvatar) {
 					avatar.decrementScore(5);
