@@ -1,31 +1,26 @@
 import { Projectile } from './Projectile.js';
+import Entite from './entite.js';
 import { Hitbox } from './hitbox.js';
-export class Avatar {
-	y;
-	x;
+export class Avatar extends Entite {
 	nom;
 	vies;
 	click;
 	vitesse;
-	image;
 	canvasSize;
 	projectiles;
 	score;
-	hitbox;
 	inertie;
 	momentumX;
 	momentumY;
 
 	constructor(nom, id, canvasSize) {
+		super(0, 0, new Hitbox(68, 145, 0, 0), null);
 		this.nom = nom;
 		this.score = 0;
-		this.y = 0;
-		this.x = 0;
 		this.vies = 3;
 		this.click = [];
 		this.vitesse = 1;
 		this.projectiles = [];
-		this.hitbox = new Hitbox(68, 145, this.x, this.y);
 		this.inertie = 0.9;
 		this.momentumX = 0;
 		this.momentumY = 0;
@@ -70,14 +65,6 @@ export class Avatar {
 
 	getNom() {
 		return this.nom;
-	}
-
-	getX() {
-		return this.x;
-	}
-
-	getY() {
-		return this.y;
 	}
 
 	getClick() {

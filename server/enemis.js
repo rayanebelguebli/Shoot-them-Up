@@ -1,21 +1,19 @@
+import Entite from '../client/src/entite.js';
 import { Hitbox } from '../client/src/hitbox.js';
-export default class enemi {
-	y;
-	x;
+export default class enemi extends Entite {
 	vy;
 	vx;
 	vies;
-	hitbox;
-	image;
 	amplitude;
 	direction;
 	positionInitialeY;
 	difficulté;
 
 	constructor(x, y, image, difficulté) {
-		this.y = y;
-		this.x = x;
-		this.image = image;
+		super(x, y, new Hitbox(50 / 2, 66, x, y), image);
+		if (difficulté == 1) {
+			this.hitbox = new Hitbox(69 / 2, 57, this.x, this.y);
+		}
 		this.difficulté = difficulté;
 		this.vx = 3;
 		this.vy = 0;
@@ -23,11 +21,6 @@ export default class enemi {
 		this.amplitude = 20;
 		this.direction = 1;
 		this.positionInitialeY = y;
-		if (difficulté == 1) {
-			this.hitbox = new Hitbox(69 / 2, 57, this.x, this.y);
-		} else {
-			this.hitbox = new Hitbox(50 / 2, 66, this.x, this.y);
-		}
 	}
 
 	colision(x, y, image) {
@@ -41,14 +34,6 @@ export default class enemi {
 
 	getVies() {
 		return this.vies;
-	}
-
-	getX() {
-		return this.x;
-	}
-
-	getY() {
-		return this.y;
 	}
 
 	getDifficulte() {
