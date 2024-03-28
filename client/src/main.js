@@ -78,6 +78,7 @@ function afficherFinDePartie() {
 
 function startGame(event) {
 	gameStarted = true;
+	socket.emit('start', gameStarted);
 	event.preventDefault();
 	canvas.style.display = '';
 	document.querySelector('.divMain').innerHTML = setHtml.vide();
@@ -85,6 +86,10 @@ function startGame(event) {
 	const canvasSize = new Coordinate(canvas.clientWidth, canvas.clientHeight);
 	socket.emit('canvasSize', canvasSize);
 }
+
+setInterval(() => {
+	socket.emit('start', gameStarted);
+}, 1000 / 16);
 
 const canvasResizeObserver = new ResizeObserver(() => resampleCanvas());
 canvasResizeObserver.observe(canvas);
@@ -116,48 +121,48 @@ let newEnemis = [];
 let newBonus = [];
 
 function render() {
-	console.log(sec);
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
+	console.log(gameStarted);
+	if (gameStarted) {
+		context.font = '40pt New Super Mario Font U';
+		context.fillStyle = 'blue';
+		context.fillText(avatar.getScore(), 10, 50);
+		context.fillText(0 + ':' + min + ':' + sec, canvas.width / 2, 50);
 
-	context.font = '40pt New Super Mario Font U';
-	context.fillStyle = 'blue';
-	context.fillText(avatar.getScore(), 10, 50);
-	context.fillText(0 + ':' + min + ':' + sec, canvas.width / 2, 50);
-
-	for (let i = 0; i < avatar.getVies(); i++) {
-		context.drawImage(imageCoeur, canvas.width - (3 - i) * 50, 0, 50, 50);
-	}
-
-	for (let avatarId in avatars) {
-		context.drawImage(avatar.image, avatars[avatarId].x, avatars[avatarId].y);
-		if (avatars[avatarId].projectiles != undefined) {
-			avatars[avatarId].projectiles.forEach(projectile => {
-				context.drawImage(imageProjectile, projectile.x, projectile.y);
-			});
+		for (let i = 0; i < avatar.getVies(); i++) {
+			context.drawImage(imageCoeur, canvas.width - (3 - i) * 50, 0, 50, 50);
 		}
-	}
-	socket.on('enemis', data => {
-		newEnemis = data;
-	});
-	newEnemis.forEach(enemi => {
-		if (enemi.difficulté == 1) {
-			draw(canvas, context, imageEnemi, enemi.x, enemi.y);
-		} else if (enemi.difficulté == 2) {
-			draw(canvas, context, imageEnemi2, enemi.x, enemi.y);
+		for (let avatarId in avatars) {
+			context.drawImage(avatar.image, avatars[avatarId].x, avatars[avatarId].y);
+			if (avatars[avatarId].projectiles != undefined) {
+				avatars[avatarId].projectiles.forEach(projectile => {
+					context.drawImage(imageProjectile, projectile.x, projectile.y);
+				});
+			}
 		}
-	});
-	socket.on('bonusArray', data => {
-		newBonus = data;
-	});
-	newBonus.forEach(bonus => {
-		console.log(bonus);
-		let img = new Image();
-		img.src = bonusImages[bonus.choix];
-		img.width = 75;
-		img.height = 75;
-		draw(canvas, context, img, bonus.x, bonus.y);
-	});
+		socket.on('enemis', data => {
+			newEnemis = data;
+		});
+		newEnemis.forEach(enemi => {
+			if (enemi.difficulté == 1) {
+				draw(canvas, context, imageEnemi, enemi.x, enemi.y);
+			} else if (enemi.difficulté == 2) {
+				draw(canvas, context, imageEnemi2, enemi.x, enemi.y);
+			}
+		});
+		socket.on('bonusArray', data => {
+			newBonus = data;
+		});
+		newBonus.forEach(bonus => {
+			console.log(bonus);
+			let img = new Image();
+			img.src = bonusImages[bonus.choix];
+			img.width = 75;
+			img.height = 75;
+			draw(canvas, context, img, bonus.x, bonus.y);
+		});
+	}
 
 	requestAnimationFrame(render);
 }
