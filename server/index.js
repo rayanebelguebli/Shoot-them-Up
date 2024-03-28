@@ -7,11 +7,7 @@ import enemi from './enemis.js';
 import { Coordinate } from '../client/src/Coordinate.js';
 import timer from './timer.js';
 import Bonus from './bonus.js';
-import {
-	bonusImages,
-	bonusNoms,
-	bonusTaille,
-} from '../client/src/choixBonus.js';
+import { bonusImages, bonusNoms, bonusTaille } from '../client/src/utils.js';
 
 const app = express();
 
@@ -196,6 +192,8 @@ setInterval(() => {
 			x: avatar.getX(),
 			y: avatar.getY(),
 			projectiles: avatar.projectiles,
+			vies: avatar.getVies(),
+			score: avatar.getScore(),
 		});
 		bonusArray.forEach(bonus => {
 			if (bonus.hitbox.colision(avatar.hitbox)) {

@@ -38,6 +38,10 @@ export class Avatar extends Entite {
 		this.score -= nb;
 	}
 
+	getScore() {
+		return this.score;
+	}
+
 	tirer() {
 		let projectile = new Projectile(this.x, this.y);
 		this.projectiles.push(projectile);

@@ -5,7 +5,7 @@ import timer from '../../server/timer.js';
 import setHtml from './setHtml.js';
 import draw from './draw.js';
 import { Coordinate } from './Coordinate.js';
-import { bonusImages } from './choixBonus.js';
+import { bonusImages, colors } from './utils.js';
 import Bonus from '../../server/bonus.js';
 
 const socket = io();
@@ -116,16 +116,24 @@ let newEnemis = [];
 let newBonus = [];
 
 function render() {
-	console.log(sec);
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
-
 	context.font = '40pt New Super Mario Font U';
+	let vies = 0;
+	for (let i = 1; i < avatars.length; i++) {
+		if (avatars[i] != undefined) {
+			context.fillStyle = colors[i - 1];
+			const x = 10 + i * 60;
+			context.fillText(avatars[i].score, x, 50);
+			vies += avatars[i].vies;
+		}
+	}
+
 	context.fillStyle = 'blue';
-	context.fillText(avatar.getScore(), 10, 50);
+
 	context.fillText(0 + ':' + min + ':' + sec, canvas.width / 2, 50);
 
-	for (let i = 0; i < avatar.getVies(); i++) {
+	for (let i = 0; i < vies; i++) {
 		context.drawImage(imageCoeur, canvas.width - (3 - i) * 50, 0, 50, 50);
 	}
 
@@ -151,7 +159,6 @@ function render() {
 		newBonus = data;
 	});
 	newBonus.forEach(bonus => {
-		console.log(bonus);
 		let img = new Image();
 		img.src = bonusImages[bonus.choix];
 		img.width = 75;
@@ -174,11 +181,15 @@ socket.on('avatarsData', avatarData => {
 			avatars[data.id].x = data.x;
 			avatars[data.id].y = data.y;
 			avatars[data.id].projectiles = data.projectiles;
+			avatars[data.id].vies = data.vies;
+			avatars[data.id].score = data.score;
 		} else {
 			avatars[data.id] = {
 				x: data.x,
 				y: data.y,
 				projectiles: data.projectiles,
+				vies: data.vies,
+				score: data.score,
 			};
 		}
 	});
@@ -212,4 +223,3 @@ document.addEventListener('keyup', event => {
 
 	event.preventDefault();
 });
-console.log(canvas.width);
