@@ -28,7 +28,7 @@ imageProjectile.src = '/images/bill.png';
 imageEnemi.src = '/images/koopa.png';
 imageEnemi2.src = '/images/bob_omb.png';
 background.src = '/images/background2.webp';
-imageCoeur.src = '/images/heart.webp';
+imageCoeur.src = '/images/heart1.webp';
 let gameStarted = false;
 let LV2Started = false;
 let canLostLifeAvatar = true;
@@ -128,19 +128,25 @@ function render() {
 	for (let i = 1; i < avatars.length; i++) {
 		if (avatars[i] != undefined) {
 			context.fillStyle = colors[i - 1];
-			const x = 10 + i * 60;
+			const x = 10 + i * 100;
 			context.fillText(avatars[i].score, x, 50);
-			vies += avatars[i].vies;
+			imageCoeur.src = `/images/heart${i}.webp`;
+			console.log(imageCoeur.src);
+			for (let j = 0; j < avatars[i].vies; j++) {
+				context.drawImage(
+					imageCoeur,
+					canvas.width - (avatars[i].vies - j) * 50,
+					i * 50 - 50,
+					50,
+					50
+				);
+			}
 		}
 	}
 
 	context.fillStyle = 'blue';
 
 	context.fillText(0 + ':' + min + ':' + sec, canvas.width / 2, 50);
-
-	for (let i = 0; i < vies; i++) {
-		context.drawImage(imageCoeur, canvas.width - (3 - i) * 50, 0, 50, 50);
-	}
 
 	for (let avatarId in avatars) {
 		context.drawImage(avatar.image, avatars[avatarId].x, avatars[avatarId].y);
