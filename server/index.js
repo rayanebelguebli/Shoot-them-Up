@@ -70,6 +70,7 @@ io.on('connection', socket => {
 		});
 
 		socket.on('start', s => {
+			console.log(s);
 			if (s == true && cpt != 0) {
 				gameStarted = s;
 			} else if (cpt == 0) {

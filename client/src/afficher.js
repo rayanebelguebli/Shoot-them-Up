@@ -2,28 +2,35 @@ import setHtml from './setHtml.js';
 import { Coordinate } from './Coordinate.js';
 
 export default class Afficher {
-	static afficherCredits(event) {
+	gameStarted;
+
+	constructor() {
+		this.gameStarted = false;
+	}
+
+	afficherCredits(event) {
 		event.preventDefault();
 		document.querySelector('.divMain').innerHTML = setHtml.credits();
 		console.log(document.querySelector('.retourMenu'));
 		document
 			.querySelector('.retourMenu')
-			.addEventListener('click', Afficher.afficherMenu);
+			.addEventListener('click', this.afficherMenu);
 	}
 
-	static afficherMenu(event) {
+	afficherMenu(event) {
 		event.preventDefault();
 		console.log('afficherMenu');
 		document.querySelector('.divMain').innerHTML = setHtml.menu();
 		document
 			.querySelector('.buttonStart')
-			.addEventListener('click', Afficher.startGame);
+			.addEventListener('click', this.startGame);
 		document
 			.querySelector('.credits')
-			.addEventListener('click', Afficher.afficherCredits);
+			.addEventListener('click', this.afficherCredits);
 	}
 
-	static afficherFinDePartie() {
+	afficherFinDePartie() {
+		this.gameStarted = false;
 		canvas.style.display = 'none';
 		document.querySelector('.animation').style.display = '';
 		document.querySelector('.divMain').innerHTML = setHtml.finDePartie(
@@ -32,11 +39,11 @@ export default class Afficher {
 		);
 		document
 			.querySelector('.retourMenu')
-			.addEventListener('click', Afficher.afficherMenu);
-		return false;
+			.addEventListener('click', this.afficherMenu);
 	}
 
-	static startGame(event) {
+	startGame(event) {
+		this.gameStarted = true;
 		event.preventDefault();
 		const canvas = document.querySelector('.gameCanvas');
 		canvas.style.display = '';
@@ -44,5 +51,9 @@ export default class Afficher {
 		document.querySelector('.animation').style.display = 'none';
 		const canvasSize = new Coordinate(canvas.clientWidth, canvas.clientHeight);
 		return canvasSize;
+	}
+
+	isGameStarted() {
+		return this.gameStarted;
 	}
 }

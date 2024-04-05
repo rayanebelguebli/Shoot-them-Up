@@ -7,10 +7,12 @@ export default class Render {
 	imageCoeur;
 	imageMortier;
 	background;
+	imageEnemi3;
 
 	constructor() {
 		this.imageEnemi = new Image();
 		this.imageEnemi2 = new Image();
+		this.imageEnemi3 = new Image();
 		this.imageProjectile = new Image();
 		this.imageCoeur = new Image();
 		this.imageMortier = new Image();
@@ -18,6 +20,7 @@ export default class Render {
 		this.imageProjectile.src = '/images/bill.png';
 		this.imageEnemi.src = '/images/koopa.png';
 		this.imageEnemi2.src = '/images/bob_omb.png';
+		this.imageEnemi3.src = '/images/boo.png';
 		this.imageMortier.src = '/images/mortier.png';
 		this.background.src = '/images/background2.webp';
 	}
@@ -36,6 +39,8 @@ export default class Render {
 			draw(canvas, context, this.imageEnemi, x, y);
 		} else if (enemi.difficulté == 2) {
 			draw(canvas, context, this.imageEnemi2, x, y);
+		} else if (enemi.difficulté == 3) {
+			draw(canvas, context, imageEnemi3, x, y);
 		}
 	}
 
