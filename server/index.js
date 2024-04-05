@@ -23,12 +23,6 @@ const fileOptions = { root: process.cwd() };
 addWebpackMiddleware(app);
 
 const io = new IOServer(httpServer);
-io.on('connection', socket => {
-	console.log(`Nouvelle connexion du client ${socket.id}`);
-	socket.on('disconnect', () => {
-		console.log(`Déconnexion du client ${socket.id}`);
-	});
-});
 
 app.use(express.static('client/public'));
 
@@ -52,45 +46,53 @@ let LVL2start = false;
 
 io.on('connection', socket => {
 	cpt++;
-	console.log(cpt);
-	const avatar = new Avatar(`${socket.id}`, cpt);
-	console.log('Connexion du client' + socket.id);
-	io.emit('newAvatar', { id: cpt, x: avatar.getX(), y: avatar.getY() });
-	avatars.push(avatar);
-	socket.on('disconnect', () => {
-		console.log(`Déconnexion du client ${socket.id}`);
-	});
+	if (cpt <= 4) {
+		const avatar = new Avatar(`${socket.id}`, cpt);
+		io.emit('newAvatar', { id: cpt, x: avatar.getX(), y: avatar.getY() });
+		avatars.push(avatar);
 
-	socket.on('clickEvent', clickEvent => {
-		const playerAvatar = avatars.find(avatar => avatar.nom === clickEvent.id);
-		if (playerAvatar) {
-			playerAvatar.click[clickEvent.key] = clickEvent.pressed;
-		} else {
-			console.log(`Aucun avatar trouvé avec le nom ${clickEvent.id}`);
-		}
-	});
+		socket.on('disconnect', () => {
+			avatars.forEach(avatar => {
+				if (avatar.nom == socket.id) {
+					console.log('taille du tableau : ' + avatars.length);
+					io.emit('disconnectEvent', avatar.id);
+					avatars.splice(avatars.indexOf(avatar), 1);
+					console.log('taille du tableau : ' + avatars.length);
+				}
+			});
+			console.log(`Déconnexion du client ${socket.id}`);
+		});
 
-	socket.on('shoot', shoot => {
-		const playerAvatar = avatars.find(avatar => avatar.nom === shoot.id);
+		socket.on('clickEvent', clickEvent => {
+			const playerAvatar = avatars.find(avatar => avatar.nom === clickEvent.id);
+			if (playerAvatar) {
+				playerAvatar.click[clickEvent.key] = clickEvent.pressed;
+			} else {
+				console.log(`Aucun avatar trouvé avec le nom ${clickEvent.id}`);
+			}
+		});
 
-		if (canShoot) {
-			playerAvatar.tirer();
-			canShoot = false;
-			setTimeout(function () {
-				canShoot = true;
-			}, 100);
-		}
-	});
+		socket.on('shoot', shoot => {
+			const playerAvatar = avatars.find(avatar => avatar.nom === shoot.id);
 
-	socket.on('LVL2', LVL2start => {
-		LVL2start = true;
-		//console.log(LVL2start);
-	});
+			if (canShoot) {
+				playerAvatar.tirer();
+				canShoot = false;
+				setTimeout(function () {
+					canShoot = true;
+				}, 100);
+			}
+		});
 
-	socket.on('canvasSize', canvasSize => {
-		console.log(canvasSize);
-		canvasSize = canvasSize;
-	});
+		socket.on('LVL2', LVL2start => {
+			LVL2start = true;
+		});
+
+		socket.on('canvasSize', canvasSize => {
+			console.log(canvasSize);
+			canvasSize = canvasSize;
+		});
+	}
 });
 
 let spawnIntervalLV1 = setInterval(() => {

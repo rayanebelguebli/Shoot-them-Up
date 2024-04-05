@@ -121,7 +121,9 @@ function render() {
 		if (avatars[i] != undefined) {
 			context.fillStyle = colors[i - 1];
 			const x = 10 + i * 100;
-			context.fillText(avatars[i].score, x, 50);
+			if (avatars[i].score != undefined) {
+				context.fillText(avatars[i].score, x, 50);
+			}
 			imageCoeur.src = `/images/heart${i}.webp`;
 			console.log(imageCoeur.src);
 			for (let j = 0; j < avatars[i].vies; j++) {
@@ -199,6 +201,10 @@ function render() {
 }
 
 let avatars = [];
+
+socket.on('disconnectEvent', id => {
+	avatars[id] = {};
+});
 
 socket.on('newAvatar', data => {
 	avatars[data.id] = { x: data.x, y: data.y };
