@@ -40,7 +40,7 @@ export default class Render {
 		} else if (enemi.difficulté == 2) {
 			draw(canvas, context, this.imageEnemi2, x, y);
 		} else if (enemi.difficulté == 3) {
-			draw(canvas, context, imageEnemi3, x, y);
+			draw(canvas, context, this.imageEnemi3, x, y);
 		}
 	}
 

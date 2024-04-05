@@ -42,8 +42,7 @@ document
 	.addEventListener('click', affichage.afficherCredits);
 
 function startGame(event) {
-	gameStarted = true;
-	const canvasSize = affichage.startGame(event, socket, canvas);
+	const canvasSize = affichage.startGame(event, canvas);
 	socket.emit('canvasSize', canvasSize);
 }
 

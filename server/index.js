@@ -126,10 +126,7 @@ let spawnIntervalLV1 = setInterval(() => {
 
 let spawnIntervalLV2 = setInterval(() => {
 	if (LVL2start && gameStarted) {
-		let randomY = Math.random() * (canvasSize.height - 0) + 0;
-		do {
-			randomY = Math.random() * (canvasSize.height - 0) + 0;
-		} while (randomY > canvasSize.height - 100);
+		let randomY = Math.random() * (canvasSize.height - 100);
 		const newEnemy = new enemi(canvasSize.width - 100, randomY, 1, 2);
 		enemis.push(newEnemy);
 	}
@@ -137,10 +134,7 @@ let spawnIntervalLV2 = setInterval(() => {
 
 let spawnIntervalLV3 = setInterval(() => {
 	if (LVL3start && gameStarted) {
-		let randomY = Math.random() * (canvasSize.height - 0) + 0;
-		do {
-			randomY = Math.random() * (canvasSize.height - 0) + 0;
-		} while (randomY > canvasSize.height - 100);
+		let randomY = Math.random() * (canvasSize.height - 100);
 		const newEnemy = new enemi(canvasSize.width - 100, randomY, 1, 3);
 		enemis.push(newEnemy);
 	}
