@@ -65,10 +65,6 @@ export class Avatar extends Entite {
 		return this.vies;
 	}
 
-	getScore() {
-		return this.score;
-	}
-
 	getNom() {
 		return this.nom;
 	}

@@ -1,39 +1,25 @@
 import { Avatar } from './avatar.js';
 import { io } from 'socket.io-client';
-import setHtml from './setHtml.js';
 import draw from './draw.js';
-import { Coordinate } from './Coordinate.js';
-import { bonusImages, colors } from './utils.js';
+import { bonusImages } from './utils.js';
 import Render from './render.js';
+import Afficher from './afficher.js';
 
 const socket = io();
 let min = 0;
 let sec = 0;
+let renderObject = new Render();
 
 const canvas = document.querySelector('.gameCanvas');
 const context = canvas.getContext('2d');
 const avatar = new Avatar('julien', 1);
-const imageMortier = new Image();
-const imageProjectile = new Image();
-const imageEnemi = new Image();
-const imageEnemi2 = new Image();
-const background = new Image();
-const imageCoeur = new Image();
 
-imageMortier.src = '/images/mortier.png';
-imageProjectile.src = '/images/bill.png';
-imageEnemi.src = '/images/koopa.png';
-imageEnemi2.src = '/images/bob_omb.png';
-background.src = '/images/background2.webp';
-imageCoeur.src = '/images/heart1.webp';
-let gameStarted = false;
-
-imageMortier.addEventListener('load', () => {
-	avatar.setImageCanvas(imageMortier, canvas);
+renderObject.imageMortier.addEventListener('load', () => {
+	avatar.setImageCanvas(renderObject.imageMortier, canvas);
 	requestAnimationFrame(render);
 });
 
-imageEnemi.addEventListener('load', () => {
+renderObject.imageEnemi.addEventListener('load', () => {
 	requestAnimationFrame(render);
 });
 
@@ -45,44 +31,14 @@ setInterval(function () {
 }, 1000);
 
 document.querySelector('.buttonStart').addEventListener('click', startGame);
-document.querySelector('.credits').addEventListener('click', afficherCredits);
-
-function afficherCredits(event) {
-	event.preventDefault();
-	document.querySelector('.divMain').innerHTML = setHtml.credits();
-	const retour = document.querySelector('.retourMenu');
-	retour.addEventListener('click', afficherMenu);
-}
-
-function afficherMenu(event) {
-	event.preventDefault();
-	document.querySelector('.divMain').innerHTML = setHtml.menu();
-	document.querySelector('.buttonStart').addEventListener('click', startGame);
-	document.querySelector('.credits').addEventListener('click', afficherCredits);
-}
-
-function afficherFinDePartie() {
-	gameStarted = false;
-	canvas.style.display = 'none';
-	document.querySelector('.animation').style.display = '';
-	document.querySelector('.divMain').innerHTML = setHtml.finDePartie(avatar, t);
-	document.querySelector('.retourMenu').addEventListener('click', afficherMenu);
-}
+document
+	.querySelector('.credits')
+	.addEventListener('click', Afficher.afficherCredits);
 
 function startGame(event) {
-	gameStarted = true;
-	socket.emit('start', gameStarted);
-	event.preventDefault();
-	canvas.style.display = '';
-	document.querySelector('.divMain').innerHTML = setHtml.vide();
-	document.querySelector('.animation').style.display = 'none';
-	const canvasSize = new Coordinate(canvas.clientWidth, canvas.clientHeight);
+	const canvasSize = Afficher.startGame(event, socket, canvas);
 	socket.emit('canvasSize', canvasSize);
 }
-
-setInterval(() => {
-	socket.emit('start', gameStarted);
-}, 1000 / 16);
 
 const canvasResizeObserver = new ResizeObserver(() => resampleCanvas());
 canvasResizeObserver.observe(canvas);
@@ -115,26 +71,12 @@ let newBonus = [];
 
 function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
-	context.drawImage(background, 0, 0, canvas.width, canvas.height);
+	renderObject.renderBackground(canvas);
 	context.font = '40pt New Super Mario Font U';
 	for (let i = 1; i < avatars.length; i++) {
 		if (avatars[i] != undefined) {
-			context.fillStyle = colors[i - 1];
-			const x = 10 + i * 100;
-			if (avatars[i].score != undefined) {
-				context.fillText(avatars[i].score, x, 50);
-			}
-			imageCoeur.src = `/images/heart${i}.webp`;
-			console.log(imageCoeur.src);
-			for (let j = 0; j < avatars[i].vies; j++) {
-				context.drawImage(
-					imageCoeur,
-					avatars[i].x + (avatars[i].vies - j) * 20 - 15,
-					avatars[i].y + imageMortier.height,
-					20,
-					20
-				);
-			}
+			renderObject.renderScores(i, avatars[i], context);
+			renderObject.renderVies(avatars, context, i);
 		}
 	}
 
@@ -143,21 +85,9 @@ function render() {
 	context.fillText(0 + ':' + min + ':' + sec, canvas.width / 2, 50);
 
 	for (let avatarId in avatars) {
-		Render.renderProjectile(
-			context,
-			avatar,
-			avatars,
-			avatarId,
-			imageProjectile
-		);
+		renderObject.renderProjectile(context, avatar, avatars, avatarId);
 		for (let avatarId in avatars) {
-			Render.renderProjectile(
-				context,
-				avatar,
-				avatars,
-				avatarId,
-				imageProjectile
-			);
+			renderObject.renderProjectile(context, avatar, avatars, avatarId);
 		}
 		socket.on('bonusArray', data => {
 			newBonus = data;
@@ -173,21 +103,13 @@ function render() {
 			newEnemis = data;
 		});
 		newEnemis.forEach(enemi => {
-			Render.renderEnnemi(
-				canvas,
-				context,
-				imageEnemi,
-				imageEnemi2,
-				enemi.x,
-				enemi.y,
-				enemi
-			);
+			renderObject.renderEnnemi(canvas, context, enemi.x, enemi.y, enemi);
 		});
 		socket.on('bonusArray', data => {
 			newBonus = data;
 		});
 		newBonus.forEach(bonus => {
-			Render.renderBonus(
+			renderObject.renderBonus(
 				canvas,
 				context,
 				bonusImages[bonus.choix],
