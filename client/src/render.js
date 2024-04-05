@@ -9,11 +9,22 @@ export default class Render {
 		}
 	}
 
-	static renderEnnemi(canvas, context, imageEnemi, imageEnemi2, x, y, enemi) {
+	static renderEnnemi(
+		canvas,
+		context,
+		imageEnemi,
+		imageEnemi2,
+		imageEnemi3,
+		x,
+		y,
+		enemi
+	) {
 		if (enemi.difficulté == 1) {
 			draw(canvas, context, imageEnemi, x, y);
 		} else if (enemi.difficulté == 2) {
 			draw(canvas, context, imageEnemi2, x, y);
+		} else if (enemi.difficulté) {
+			draw(canvas, context, imageEnemi3, x, y);
 		}
 	}
 

@@ -17,6 +17,7 @@ const imageMortier = new Image();
 const imageProjectile = new Image();
 const imageEnemi = new Image();
 const imageEnemi2 = new Image();
+const imageEnemi3 = new Image();
 const background = new Image();
 const imageCoeur = new Image();
 
@@ -24,6 +25,7 @@ imageMortier.src = '/images/mortier.png';
 imageProjectile.src = '/images/bill.png';
 imageEnemi.src = '/images/koopa.png';
 imageEnemi2.src = '/images/bob_omb.png';
+imageEnemi3.src = '/images/boo.png';
 background.src = '/images/background2.webp';
 imageCoeur.src = '/images/heart1.webp';
 let gameStarted = false;
@@ -210,6 +212,7 @@ function render() {
 					context,
 					imageEnemi,
 					imageEnemi2,
+					imageEnemi3,
 					enemi.x,
 					enemi.y,
 					enemi

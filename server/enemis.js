@@ -18,6 +18,9 @@ export default class enemi extends Entite {
 		} else if (difficulté == 2) {
 			this.vx = 5;
 			this.vy = 1;
+		} else if (difficulté == 3) {
+			this.vx = 20;
+			this.vy = 16;
 		}
 		this.difficulté = difficulté;
 		this.vies = 2;

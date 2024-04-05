@@ -48,6 +48,7 @@ const bonusArray = [];
 let cpt = 0;
 let canShoot = true;
 let LVL2start = false;
+let LVL3start = false;
 
 io.on('connection', socket => {
 	cpt++;
@@ -93,12 +94,8 @@ io.on('connection', socket => {
 				canShoot = false;
 				setTimeout(function () {
 					canShoot = true;
-				}, 100);
+				}, 200);
 			}
-		});
-
-		socket.on('LVL2', LVL2start => {
-			LVL2start = true;
 		});
 
 		socket.on('canvasSize', canvasSize => {
@@ -112,6 +109,9 @@ let spawnIntervalLV1 = setInterval(() => {
 	if (gameStarted) {
 		if (t.getMin() >= 1) {
 			LVL2start = true;
+		}
+		if (t.getSec() >= 30) {
+			LVL3start = true;
 		}
 
 		let randomY = Math.random() * (canvasSize.height - 0) + 0;
@@ -133,6 +133,17 @@ let spawnIntervalLV2 = setInterval(() => {
 		enemis.push(newEnemy);
 	}
 }, 800);
+
+let spawnIntervalLV3 = setInterval(() => {
+	if (LVL3start && gameStarted) {
+		let randomY = Math.random() * (canvasSize.height - 0) + 0;
+		do {
+			randomY = Math.random() * (canvasSize.height - 0) + 0;
+		} while (randomY > canvasSize.height - 100);
+		const newEnemy = new enemi(canvasSize.width - 100, randomY, 1, 3);
+		enemis.push(newEnemy);
+	}
+}, 4000);
 
 let spawnBonusInterval = setInterval(() => {
 	if (gameStarted) {
