@@ -12,11 +12,14 @@ export default class enemi extends Entite {
 	constructor(x, y, image, difficulté) {
 		super(x, y, new Hitbox(50 / 2, 66, x, y), image);
 		if (difficulté == 1) {
+			this.vx = 3;
+			this.vy = 0;
 			this.hitbox = new Hitbox(69 / 2, 57, this.x, this.y);
+		} else if (difficulté == 2) {
+			this.vx = 5;
+			this.vy = 1;
 		}
 		this.difficulté = difficulté;
-		this.vx = 3;
-		this.vy = 0;
 		this.vies = 2;
 		this.amplitude = 20;
 		this.direction = 1;
@@ -46,14 +49,6 @@ export default class enemi extends Entite {
 
 	getVy() {
 		return this.vy;
-	}
-
-	setVx(vx) {
-		this.vx = vx;
-	}
-
-	setVy(vy) {
-		this.vy = vy;
 	}
 
 	deplacer() {
