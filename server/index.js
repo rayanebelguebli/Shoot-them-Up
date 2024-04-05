@@ -15,6 +15,7 @@ let canvasSize = new Coordinate(1920, 1261);
 
 let canLostLifeAvatar = true;
 let canLostLifeEnemi = true;
+let gameStarted = false;
 
 let t = new timer();
 
@@ -32,8 +33,12 @@ httpServer.listen(port, () => {
 });
 
 setInterval(function () {
-	t.addTime();
-	io.emit('timer', t.getMin(), t.getSec());
+	if (gameStarted) {
+		t.addTime();
+		io.emit('timer', t.getMin(), t.getSec());
+	} else {
+		t = new timer();
+	}
 }, 1000);
 
 const avatars = [];
@@ -61,6 +66,14 @@ io.on('connection', socket => {
 				}
 			});
 			console.log(`Déconnexion du client ${socket.id}`);
+		});
+
+		socket.on('start', s => {
+			if (s == true && cpt != 0) {
+				gameStarted = s;
+			} else if (cpt == 0) {
+				gameStarted = false;
+			}
 		});
 
 		socket.on('clickEvent', clickEvent => {
@@ -96,43 +109,45 @@ io.on('connection', socket => {
 });
 
 let spawnIntervalLV1 = setInterval(() => {
-	if (t.getSec() >= 10) {
-		LVL2start = true;
-	}
+	if (gameStarted) {
+		if (t.getMin() >= 1) {
+			LVL2start = true;
+		}
 
-	let randomY = Math.random() * (canvasSize.height - 0) + 0;
-	do {
-		randomY = Math.random() * (canvasSize.height - 0) + 0;
-	} while (randomY > canvasSize.height - 57);
-	const newEnemy = new enemi(canvasSize.width, randomY, 0, 1);
-	enemis.push(newEnemy);
+		let randomY = Math.random() * (canvasSize.height - 0) + 0;
+		do {
+			randomY = Math.random() * (canvasSize.height - 0) + 0;
+		} while (randomY > canvasSize.height - 57);
+		const newEnemy = new enemi(canvasSize.width, randomY, 0, 1);
+		enemis.push(newEnemy);
+	}
 }, 1000);
 
 let spawnIntervalLV2 = setInterval(() => {
-	if (LVL2start) {
+	if (LVL2start && gameStarted) {
 		let randomY = Math.random() * (canvasSize.height - 0) + 0;
 		do {
 			randomY = Math.random() * (canvasSize.height - 0) + 0;
 		} while (randomY > canvasSize.height - 100);
 		const newEnemy = new enemi(canvasSize.width - 100, randomY, 1, 2);
-		newEnemy.setVx(10);
-		newEnemy.setVy(4);
 		enemis.push(newEnemy);
 	}
 }, 800);
 
 let spawnBonusInterval = setInterval(() => {
-	let randomX;
-	let randomY;
-	const choix = Math.floor(Math.random() * bonusNoms.length);
-	do {
-		randomY = Math.random() * (canvasSize.height - 0) + 0;
-	} while (randomY > canvasSize.height - 75);
-	do {
-		randomX = Math.random() * (canvasSize.width - 0) + 0;
-	} while (randomX > canvasSize.width - 75);
-	const bonus = new Bonus(choix, 1, randomX, randomY, t.getTotalTime());
-	bonusArray.push(bonus);
+	if (gameStarted) {
+		let randomX;
+		let randomY;
+		const choix = Math.floor(Math.random() * bonusNoms.length);
+		do {
+			randomY = Math.random() * (canvasSize.height - 0) + 0;
+		} while (randomY > canvasSize.height - 75);
+		do {
+			randomX = Math.random() * (canvasSize.width - 0) + 0;
+		} while (randomX > canvasSize.width - 75);
+		const bonus = new Bonus(choix, 1, randomX, randomY, t.getTotalTime());
+		bonusArray.push(bonus);
+	}
 }, 15000);
 
 setInterval(() => {
