@@ -1,12 +1,10 @@
 import { Avatar } from './avatar.js';
-import Enemi from '../../server/enemis.js';
 import { io } from 'socket.io-client';
-import timer from '../../server/timer.js';
 import setHtml from './setHtml.js';
 import draw from './draw.js';
 import { Coordinate } from './Coordinate.js';
 import { bonusImages, colors } from './utils.js';
-import Bonus from '../../server/bonus.js';
+import Render from './render.js';
 
 const socket = io();
 let min = 0;
@@ -14,7 +12,6 @@ let sec = 0;
 
 const canvas = document.querySelector('.gameCanvas');
 const context = canvas.getContext('2d');
-const enemis = [];
 const avatar = new Avatar('julien', 1);
 const imageMortier = new Image();
 const imageProjectile = new Image();
@@ -30,9 +27,6 @@ imageEnemi2.src = '/images/bob_omb.png';
 background.src = '/images/background2.webp';
 imageCoeur.src = '/images/heart1.webp';
 let gameStarted = false;
-let LV2Started = false;
-let canLostLifeAvatar = true;
-let canLostLifeEnemi = true;
 
 imageMortier.addEventListener('load', () => {
 	avatar.setImageCanvas(imageMortier, canvas);
@@ -72,8 +66,7 @@ function afficherFinDePartie() {
 	canvas.style.display = 'none';
 	document.querySelector('.animation').style.display = '';
 	document.querySelector('.divMain').innerHTML = setHtml.finDePartie(avatar, t);
-	const retour = document.querySelector('.retourMenu');
-	retour.addEventListener('click', afficherMenu);
+	document.querySelector('.retourMenu').addEventListener('click', afficherMenu);
 }
 
 function startGame(event) {
@@ -124,7 +117,6 @@ function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.drawImage(background, 0, 0, canvas.width, canvas.height);
 	context.font = '40pt New Super Mario Font U';
-	let vies = 0;
 	for (let i = 1; i < avatars.length; i++) {
 		if (avatars[i] != undefined) {
 			context.fillStyle = colors[i - 1];
@@ -149,19 +141,21 @@ function render() {
 	context.fillText(0 + ':' + min + ':' + sec, canvas.width / 2, 50);
 
 	for (let avatarId in avatars) {
-		context.drawImage(avatar.image, avatars[avatarId].x, avatars[avatarId].y);
-		if (avatars[avatarId].projectiles != undefined) {
-			avatars[avatarId].projectiles.forEach(projectile => {
-				context.drawImage(imageProjectile, projectile.x, projectile.y);
-			});
-		}
+		Render.renderProjectile(
+			context,
+			avatar,
+			avatars,
+			avatarId,
+			imageProjectile
+		);
 		for (let avatarId in avatars) {
-			context.drawImage(avatar.image, avatars[avatarId].x, avatars[avatarId].y);
-			if (avatars[avatarId].projectiles != undefined) {
-				avatars[avatarId].projectiles.forEach(projectile => {
-					context.drawImage(imageProjectile, projectile.x, projectile.y);
-				});
-			}
+			Render.renderProjectile(
+				context,
+				avatar,
+				avatars,
+				avatarId,
+				imageProjectile
+			);
 		}
 		socket.on('bonusArray', data => {
 			newBonus = data;
@@ -177,22 +171,27 @@ function render() {
 			newEnemis = data;
 		});
 		newEnemis.forEach(enemi => {
-			if (enemi.difficulté == 1) {
-				draw(canvas, context, imageEnemi, enemi.x, enemi.y);
-			} else if (enemi.difficulté == 2) {
-				draw(canvas, context, imageEnemi2, enemi.x, enemi.y);
-			}
+			Render.renderEnnemi(
+				canvas,
+				context,
+				imageEnemi,
+				imageEnemi2,
+				enemi.x,
+				enemi.y,
+				enemi
+			);
 		});
 		socket.on('bonusArray', data => {
 			newBonus = data;
 		});
 		newBonus.forEach(bonus => {
-			console.log(bonus);
-			let img = new Image();
-			img.src = bonusImages[bonus.choix];
-			img.width = 75;
-			img.height = 75;
-			draw(canvas, context, img, bonus.x, bonus.y);
+			Render.renderBonus(
+				canvas,
+				context,
+				bonusImages[bonus.choix],
+				bonus.x,
+				bonus.y
+			);
 		});
 	}
 
