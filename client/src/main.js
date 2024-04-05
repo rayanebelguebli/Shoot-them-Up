@@ -135,10 +135,10 @@ function render() {
 			for (let j = 0; j < avatars[i].vies; j++) {
 				context.drawImage(
 					imageCoeur,
-					canvas.width - (avatars[i].vies - j) * 50,
-					i * 50 - 50,
-					50,
-					50
+					avatars[i].x + (avatars[i].vies - j) * 20 - 15,
+					avatars[i].y + imageMortier.height,
+					20,
+					20
 				);
 			}
 		}
