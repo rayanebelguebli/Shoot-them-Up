@@ -70,7 +70,6 @@ io.on('connection', socket => {
 		});
 
 		socket.on('start', s => {
-			console.log(s);
 			if (s == true && cpt != 0) {
 				gameStarted = s;
 			} else if (cpt == 0) {
@@ -184,9 +183,8 @@ setInterval(() => {
 					}, 100);
 				}
 				if (avatar.getVies() == 0) {
-					//afficherFinDePartie();
 					avatar.initAvatar();
-					//t = new timer();
+					//TODO : afficher écran fin de partie de l'avatar concerné
 				}
 			}
 			if (enemi.getVies() < 0) {

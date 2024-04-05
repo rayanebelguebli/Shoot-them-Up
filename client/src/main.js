@@ -14,7 +14,7 @@ let gameStarted = false;
 
 const canvas = document.querySelector('.gameCanvas');
 const context = canvas.getContext('2d');
-const avatar = new Avatar('julien', 1);
+const avatar = new Avatar('1', 1);
 
 renderObject.imageMortier.addEventListener('load', () => {
 	avatar.setImageCanvas(renderObject.imageMortier, canvas);
@@ -79,7 +79,6 @@ function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	renderObject.renderBackground(canvas);
 	gameStarted = affichage.isGameStarted();
-	console.log(gameStarted);
 	if (gameStarted) {
 		context.font = '40pt New Super Mario Font U';
 		for (let i = 1; i < avatars.length; i++) {
@@ -135,6 +134,9 @@ function render() {
 let avatars = [];
 
 socket.on('disconnectEvent', id => {
+	if (avatar.getNom() == id) {
+		affichage.afficherFinDePartie();
+	}
 	avatars[id] = {};
 });
 
