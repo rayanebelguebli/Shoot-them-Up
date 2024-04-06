@@ -1,5 +1,5 @@
 import setHtml from './setHtml.js';
-import { Coordinate } from './Coordinate.js';
+import { Coordinate } from '../../common/Coordinate.js';
 
 export default class Afficher {
 	gameStarted;

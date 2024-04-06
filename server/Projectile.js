@@ -1,5 +1,5 @@
 import { Hitbox } from './hitbox.js';
-import draw from './draw.js';
+import draw from '../client/src/draw.js';
 import Entite from './entite.js';
 
 export class Projectile extends Entite {

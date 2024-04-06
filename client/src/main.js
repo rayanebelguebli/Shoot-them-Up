@@ -1,7 +1,7 @@
-import { Avatar } from './avatar.js';
+import { Avatar } from '../../common/avatar.js';
 import { io } from 'socket.io-client';
 import draw from './draw.js';
-import { bonusImages } from './utils.js';
+import { bonusImages } from '../../common/utils.js';
 import Render from './render.js';
 import Afficher from './afficher.js';
 import setHtml from './setHtml.js';
@@ -55,24 +55,6 @@ function resampleCanvas() {
 	canvas.height = canvas.clientHeight;
 }
 
-document.addEventListener('keydown', event => {
-	let canShoot = true;
-	avatar.changerClick(event);
-	if (event.key === ' ') {
-		if (canShoot) {
-			avatar.tirer();
-			canShoot = false;
-			setTimeout(function () {
-				canShoot = true;
-			}, 100);
-		}
-	}
-});
-
-document.addEventListener('keyup', event => {
-	avatar.changerClick(event);
-});
-
 let newEnemis = [];
 let newBonus = [];
 
@@ -80,157 +62,112 @@ function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	renderObject.renderBackground(canvas);
 	gameStarted = affichage.isGameStarted();
+
 	if (gameStarted) {
 		context.font = '40pt New Super Mario Font U';
-		for (let i = 1; i < avatars.length; i++) {
-			if (avatars[i] != undefined) {
-				renderObject.renderScores(i, avatars[i], context);
-				renderObject.renderVies(avatars, context, i);
-			}
-		}
-
 		context.fillStyle = 'blue';
+		context.fillText(`0:${min}:${sec}`, canvas.width / 2, 50);
 
-		context.fillText(0 + ':' + min + ':' + sec, canvas.width / 2, 50);
+		Object.entries(avatars)
+			.filter(([avatarId, avatarData]) => avatarData !== undefined)
+			.forEach(([avatarId, avatarData]) => {
+				renderObject.renderScores(avatarId, avatarData, context);
+				renderObject.renderVies(avatars, context, avatarId);
+			});
 
-		for (let avatarId in avatars) {
-			renderObject.renderProjectile(context, avatar, avatars, avatarId);
-			for (let avatarId in avatars) {
-				renderObject.renderProjectile(context, avatar, avatars, avatarId);
-			}
-			socket.on('bonusArray', data => {
-				newBonus = data;
-			});
-			newBonus.forEach(bonus => {
-				let img = new Image();
-				img.src = bonusImages[bonus.choix];
-				img.width = 75;
-				img.height = 75;
-				draw(canvas, context, img, bonus.x, bonus.y);
-			});
-			socket.on('enemis', data => {
-				newEnemis = data;
-			});
-			newEnemis.forEach(enemi => {
-				renderObject.renderEnnemi(canvas, context, enemi.x, enemi.y, enemi);
-			});
-			socket.on('bonusArray', data => {
-				newBonus = data;
-			});
-			newBonus.forEach(bonus => {
-				renderObject.renderBonus(
-					canvas,
-					context,
-					bonusImages[bonus.choix],
-					bonus.x,
-					bonus.y
-				);
-			});
-		}
+		renderProjectiles();
+		renderBonuses();
+		renderEnemies();
 	}
 
 	requestAnimationFrame(render);
 }
 
+function renderProjectiles() {
+	for (const avatarId in avatars) {
+		renderObject.renderProjectile(context, avatar, avatars, avatarId);
+	}
+}
+
+function renderBonuses() {
+	socket.on('bonusArray', data => {
+		newBonus = data;
+	});
+
+	newBonus.forEach(bonus => {
+		const img = new Image();
+		img.src = bonusImages[bonus.choix];
+		img.width = 75;
+		img.height = 75;
+		draw(canvas, context, img, bonus.x, bonus.y);
+	});
+}
+
+function renderEnemies() {
+	socket.on('enemis', data => {
+		newEnemis = data;
+	});
+
+	newEnemis.forEach(enemi => {
+		renderObject.renderEnnemi(canvas, context, enemi.x, enemi.y, enemi);
+	});
+}
+
 let avatars = [];
 
-let avatarsScore = {}; // Objet pour stocker les scores associés à chaque avatarId
+let avatarsScore = {};
 
 socket.on('dead', avatarId => {
-	// Récupérer le score de l'avatar avant de le supprimer
 	const score = avatars[avatarId] ? avatars[avatarId].score : 0;
 
-	// Stocker le score associé à l'avatarId dans l'objet avatarsScore
 	avatarsScore[avatarId] = score;
 
-	// Supprimer l'avatar du tableau avatars
 	delete avatars[avatarId];
-
-	// Afficher la fin de partie ou effectuer d'autres actions nécessaires
-	// affichage.afficherFinDePartie();
-	console.log(`Avatar ${avatarId} est mort. Score sauvegardé : ${score}`);
 });
 
-socket.on('disconnectEvent', id => {
-	if (avatar.getNom() == id) {
-		// Si l'avatar est celui du joueur local, afficher la fin de partie
-		affichage.afficherFinDePartie();
-	}
-	// Supprimer l'avatar de avatars
-	delete avatars[id];
-});
-
-// Réception des données des avatars depuis le serveur
 socket.on('avatarsData', avatarData => {
-	avatarData.forEach(data => {
-		// Mise à jour des données de l'avatar dans avatars
-		if (avatars[data.id] != undefined) {
-			avatars[data.id].x = data.x;
-			avatars[data.id].y = data.y;
-			avatars[data.id].projectiles = data.projectiles;
-			avatars[data.id].vies = data.vies;
-			avatars[data.id].score = data.score;
-			avatars[data.id].socketId = data.socketId;
-		} else {
-			// Création d'un nouvel avatar dans avatars si celui-ci n'existe pas encore
-			avatars[data.id] = {
-				x: data.x,
-				y: data.y,
-				projectiles: data.projectiles,
-				vies: data.vies,
-				score: data.score,
-				socketId: data.socketId,
-			};
-		}
-	});
+	for (const data of avatarData) {
+		avatars[data.id] = {
+			x: data.x,
+			y: data.y,
+			projectiles: data.projectiles,
+			vies: data.vies,
+			score: data.score,
+			socketId: data.socketId,
+		};
+	}
 });
 
 const keysPressed = {};
 
-document.addEventListener('keydown', event => {
-	keysPressed[event.keyCode] = true;
+document.addEventListener('keydown', handleKeyEvent);
+document.addEventListener('keyup', handleKeyEvent);
+
+function handleKeyEvent(event) {
+	keysPressed[event.keyCode] = event.type === 'keydown';
+
 	if (event.key === ' ') {
 		socket.emit('shoot', {
 			id: `${socket.id}`,
 			shoot: true,
 		});
 	}
-	socket.emit('clickEvent', {
-		id: `${socket.id}`,
-		key: event.keyCode,
-		pressed: true,
-	});
-	event.preventDefault();
-});
-
-document.addEventListener('keyup', event => {
-	keysPressed[event.keyCode] = false;
 
 	socket.emit('clickEvent', {
 		id: `${socket.id}`,
 		key: event.keyCode,
-		pressed: false,
+		pressed: event.type === 'keydown',
 	});
 
 	event.preventDefault();
-});
+}
 
-let endGame = false;
-socket.on('endGame', () => {
-	console.log(
+socket.once('endGame', () => {
+	affichage.afficherFinDePartie(
+		canvas,
 		avatarsScore[1],
 		avatarsScore[2],
 		avatarsScore[3],
 		avatarsScore[4]
 	);
-	if (!endGame) {
-		affichage.afficherFinDePartie(
-			canvas,
-			avatarsScore[1],
-			avatarsScore[2],
-			avatarsScore[3],
-			avatarsScore[4]
-		);
-	}
-	endGame = true;
 });

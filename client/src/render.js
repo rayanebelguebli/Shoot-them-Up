@@ -1,5 +1,5 @@
 import draw from './draw.js';
-import { colors } from './utils.js';
+import { colors } from '../../common/utils.js';
 export default class Render {
 	imageEnemi;
 	imageEnemi2;

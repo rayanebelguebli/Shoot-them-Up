@@ -1,6 +1,6 @@
-import { Projectile } from './Projectile.js';
-import Entite from './entite.js';
-import { Hitbox } from './hitbox.js';
+import { Projectile } from '../server/Projectile.js';
+import Entite from '../server/entite.js';
+import { Hitbox } from '../server/hitbox.js';
 export class Avatar extends Entite {
 	nom;
 	vies;

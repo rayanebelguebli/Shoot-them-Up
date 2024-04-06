@@ -1,5 +1,5 @@
-import Entite from '../client/src/entite.js';
-import { Hitbox } from '../client/src/hitbox.js';
+import Entite from './entite.js';
+import { Hitbox } from './hitbox.js';
 export default class enemi extends Entite {
 	vy;
 	vx;
