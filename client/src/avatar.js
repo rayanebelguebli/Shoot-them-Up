@@ -14,6 +14,7 @@ export class Avatar extends Entite {
 	momentumY;
 	statut;
 	statutTime;
+	spectateur;
 
 	constructor(nom, id, canvasSize) {
 		super(0, 0, new Hitbox(68, 145, 0, 0), null);
@@ -28,6 +29,11 @@ export class Avatar extends Entite {
 		this.momentumY = 0;
 		this.canvasSize = canvasSize;
 		this.id = id;
+		this.spectateur = false;
+	}
+
+	setSpectateur() {
+		this.spectateur = true;
 	}
 
 	incrementScore(nb) {

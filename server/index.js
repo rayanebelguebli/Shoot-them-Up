@@ -60,10 +60,8 @@ io.on('connection', socket => {
 		socket.on('disconnect', () => {
 			avatars.forEach(avatar => {
 				if (avatar.nom == socket.id) {
-					console.log('taille du tableau : ' + avatars.length);
 					io.emit('disconnectEvent', avatar.id);
 					avatars.splice(avatars.indexOf(avatar), 1);
-					console.log('taille du tableau : ' + avatars.length);
 				}
 			});
 			console.log(`Déconnexion du client ${socket.id}`);
@@ -183,7 +181,9 @@ setInterval(() => {
 					}, 100);
 				}
 				if (avatar.getVies() == 0) {
-					avatar.initAvatar();
+					//avatar.initAvatar();
+					avatar.setSpectateur();
+					io.emit('dead', avatar.id);
 					//TODO : afficher écran fin de partie de l'avatar concerné
 				}
 			}
@@ -208,14 +208,16 @@ setInterval(() => {
 		});
 		avatar.deplacer();
 		avatar.projectiles.forEach(projectile => projectile.deplacer());
-		avatarData.push({
-			id: avatar.id,
-			x: avatar.getX(),
-			y: avatar.getY(),
-			projectiles: avatar.projectiles,
-			vies: avatar.getVies(),
-			score: avatar.getScore(),
-		});
+		if (!avatar.spectateur) {
+			avatarData.push({
+				id: avatar.id,
+				x: avatar.getX(),
+				y: avatar.getY(),
+				projectiles: avatar.projectiles,
+				vies: avatar.getVies(),
+				score: avatar.getScore(),
+			});
+		}
 		bonusArray.forEach(bonus => {
 			if (bonus.hitbox.colision(avatar.hitbox)) {
 				if (bonusNoms[bonus.getChoix()] == 'vie') {

@@ -133,6 +133,12 @@ function render() {
 
 let avatars = [];
 
+socket.on('dead', avatarId => {
+	//affichage.afficherFinDePartie();
+	console.log(avatarId);
+	avatars[avatarId] = {};
+});
+
 socket.on('disconnectEvent', id => {
 	if (avatar.getNom() == id) {
 		affichage.afficherFinDePartie();
