@@ -4,6 +4,7 @@ import draw from './draw.js';
 import { bonusImages } from './utils.js';
 import Render from './render.js';
 import Afficher from './afficher.js';
+import setHtml from './setHtml.js';
 
 const socket = io();
 let min = 0;
@@ -133,42 +134,57 @@ function render() {
 
 let avatars = [];
 
+let avatarsScore = {}; // Objet pour stocker les scores associés à chaque avatarId
+
 socket.on('dead', avatarId => {
-	//affichage.afficherFinDePartie();
-	console.log(avatarId);
-	avatars[avatarId] = {};
+	// Récupérer le score de l'avatar avant de le supprimer
+	const score = avatars[avatarId] ? avatars[avatarId].score : 0;
+
+	// Stocker le score associé à l'avatarId dans l'objet avatarsScore
+	avatarsScore[avatarId] = score;
+
+	// Supprimer l'avatar du tableau avatars
+	delete avatars[avatarId];
+
+	// Afficher la fin de partie ou effectuer d'autres actions nécessaires
+	// affichage.afficherFinDePartie();
+	console.log(`Avatar ${avatarId} est mort. Score sauvegardé : ${score}`);
 });
 
 socket.on('disconnectEvent', id => {
 	if (avatar.getNom() == id) {
+		// Si l'avatar est celui du joueur local, afficher la fin de partie
 		affichage.afficherFinDePartie();
 	}
-	avatars[id] = {};
+	// Supprimer l'avatar de avatars
+	delete avatars[id];
 });
 
-socket.on('newAvatar', data => {
-	avatars[data.id] = { x: data.x, y: data.y };
-});
-
+// Réception des données des avatars depuis le serveur
 socket.on('avatarsData', avatarData => {
 	avatarData.forEach(data => {
+		// Mise à jour des données de l'avatar dans avatars
 		if (avatars[data.id] != undefined) {
 			avatars[data.id].x = data.x;
 			avatars[data.id].y = data.y;
 			avatars[data.id].projectiles = data.projectiles;
 			avatars[data.id].vies = data.vies;
 			avatars[data.id].score = data.score;
+			avatars[data.id].socketId = data.socketId;
 		} else {
+			// Création d'un nouvel avatar dans avatars si celui-ci n'existe pas encore
 			avatars[data.id] = {
 				x: data.x,
 				y: data.y,
 				projectiles: data.projectiles,
 				vies: data.vies,
 				score: data.score,
+				socketId: data.socketId,
 			};
 		}
 	});
 });
+
 const keysPressed = {};
 
 document.addEventListener('keydown', event => {
@@ -197,4 +213,24 @@ document.addEventListener('keyup', event => {
 	});
 
 	event.preventDefault();
+});
+
+let endGame = false;
+socket.on('endGame', () => {
+	console.log(
+		avatarsScore[1],
+		avatarsScore[2],
+		avatarsScore[3],
+		avatarsScore[4]
+	);
+	if (!endGame) {
+		affichage.afficherFinDePartie(
+			canvas,
+			avatarsScore[1],
+			avatarsScore[2],
+			avatarsScore[3],
+			avatarsScore[4]
+		);
+	}
+	endGame = true;
 });

@@ -160,4 +160,6 @@ section .air.air4{
   100%{
     background-position-x: -1000px; 
   }
+}.hidden {
+  display: none;
 }

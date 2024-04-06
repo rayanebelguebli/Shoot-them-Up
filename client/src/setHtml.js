@@ -8,13 +8,25 @@ export default class setHtml {
 		<button class="retourMenu">Retour au menu</button>`;
 	}
 
-	static finDePartie(avatar, t) {
-		return `
-        <h2> GAME OVER </h2>
-        <h3>score : ${avatar.getScore()}</h3>
-        <h3>temps : ${t.getHrs()} : ${t.getMin()} : ${t.getSec()}</h3>
-        <button class="retourMenu">Retour au menu</button>
-        `;
+	static finDePartie(score1, score2, score3, score4) {
+		let scoreHTML = `<h2> GAME OVER </h2>`;
+
+		if (score1 !== undefined) {
+			scoreHTML += `<h3>score joueur1 : ${score1}</h3>`;
+		}
+		if (score2 !== undefined) {
+			scoreHTML += `<h3>score joueur2 : ${score2}</h3>`;
+		}
+		if (score3 !== undefined) {
+			scoreHTML += `<h3>score joueur3 : ${score3}</h3>`;
+		}
+		if (score4 !== undefined) {
+			scoreHTML += `<h3>score joueur4 : ${score4}</h3>`;
+		}
+
+		scoreHTML += `<button class="retourMenu">Retour au menu</button>`;
+
+		return scoreHTML;
 	}
 
 	static vide() {

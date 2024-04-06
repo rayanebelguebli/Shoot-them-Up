@@ -6,12 +6,15 @@ export default class Afficher {
 
 	constructor() {
 		this.gameStarted = false;
+		this.afficherMenu = this.afficherMenu.bind(this);
+		this.startGame = this.startGame.bind(this);
 	}
 
 	afficherCredits(event) {
-		event.preventDefault();
+		//event.preventDefault();
 		document.querySelector('.divMain').innerHTML = setHtml.credits();
 		console.log(document.querySelector('.retourMenu'));
+		console.log(divMain.innerHTML);
 		document
 			.querySelector('.retourMenu')
 			.addEventListener('click', this.afficherMenu);
@@ -27,15 +30,18 @@ export default class Afficher {
 		document
 			.querySelector('.credits')
 			.addEventListener('click', this.afficherCredits);
+		location.reload();
 	}
 
-	afficherFinDePartie() {
+	afficherFinDePartie(canvas, score1, score2, score3, score4) {
 		this.gameStarted = false;
 		canvas.style.display = 'none';
 		document.querySelector('.animation').style.display = '';
 		document.querySelector('.divMain').innerHTML = setHtml.finDePartie(
-			avatar,
-			t
+			score1,
+			score2,
+			score3,
+			score4
 		);
 		document
 			.querySelector('.retourMenu')
