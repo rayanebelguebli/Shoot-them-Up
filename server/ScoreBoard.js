@@ -10,13 +10,11 @@ export class GestionScore {
 			const data = fs.readFileSync(this.jsonFilePath);
 			const scores = JSON.parse(data);
 
-			// Trier les scores par ordre décroissant
 			scores.results.sort((a, b) => b.score - a.score);
 
 			let html =
 				'<table><thead><tr><th>Nom</th><th>Score</th></tr></thead><tbody>';
 
-			// Afficher les 10 premiers résultats
 			const numberOfResults = Math.min(10, scores.results.length);
 			for (let i = 0; i < numberOfResults; i++) {
 				const result = scores.results[i];

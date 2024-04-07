@@ -46,7 +46,7 @@ const avatars = [];
 const enemis = [];
 const bonusArray = [];
 
-let cpt = 0;
+let cptConnexion = 0;
 let canShoot = true;
 let LVL2start = false;
 let LVL3start = false;
@@ -55,62 +55,100 @@ const gestionScore = new GestionScore('client/src/scoreboard.json');
 let scores = gestionScore.afficherScores();
 
 io.on('connection', socket => {
-	cpt++;
-	if (cpt <= 4) {
+	cptConnexion++;
+
+	if (cptConnexion <= 4) {
 		firstAvatar = true;
-		const avatar = new Avatar(`${socket.id}`, cpt);
-		io.emit('newAvatar', { id: cpt, x: avatar.getX(), y: avatar.getY() });
-		avatars.push(avatar);
-		socket.on('pseudo', pseudo => {
-			avatar.pseudo = pseudo;
+
+		const avatar = createAvatar(socket);
+
+		io.emit('newAvatar', {
+			id: cptConnexion,
+			x: avatar.getX(),
+			y: avatar.getY(),
 		});
+
+		handlePseudonym(socket, avatar);
+
 		io.emit('scores', scores);
 
-		socket.on('disconnect', () => {
-			avatars.forEach(avatar => {
-				if (avatar.nom == socket.id) {
-					io.emit('disconnectEvent', avatar.id);
-					avatars.splice(avatars.indexOf(avatar), 1);
-				}
-			});
-			console.log(`Déconnexion du client ${socket.id}`);
-		});
+		handleDisconnect(socket);
 
-		socket.on('start', s => {
-			if (s == true && cpt != 0) {
-				gameStarted = s;
-			} else if (cpt == 0) {
-				gameStarted = false;
-			}
-		});
+		handleGameStart(socket);
 
-		socket.on('clickEvent', clickEvent => {
-			const playerAvatar = avatars.find(avatar => avatar.nom === clickEvent.id);
-			if (playerAvatar) {
-				playerAvatar.click[clickEvent.key] = clickEvent.pressed;
-			} else {
-				console.log(`Aucun avatar trouvé avec le nom ${clickEvent.id}`);
-			}
-		});
+		handleClickEvents(socket);
 
-		socket.on('shoot', shoot => {
-			const playerAvatar = avatars.find(avatar => avatar.nom === shoot.id);
+		handleShooting(socket);
 
-			if (canShoot) {
-				playerAvatar.tirer();
-				canShoot = false;
-				setTimeout(function () {
-					canShoot = true;
-				}, 200);
-			}
-		});
-
-		socket.on('canvasSize', canvasSize => {
-			console.log(canvasSize);
-			canvasSize = canvasSize;
-		});
+		handleCanvasSize(socket);
 	}
 });
+
+function createAvatar(socket) {
+	const avatar = new Avatar(`${socket.id}`, cptConnexion);
+	avatars.push(avatar);
+	return avatar;
+}
+
+function handlePseudonym(socket, avatar) {
+	socket.on('pseudo', pseudo => {
+		avatar.pseudo = pseudo;
+	});
+}
+
+function handleDisconnect(socket) {
+	socket.on('disconnect', () => {
+		avatars.forEach(avatar => {
+			if (avatar.nom == socket.id) {
+				io.emit('disconnectEvent', avatar.id);
+				avatars.splice(avatars.indexOf(avatar), 1);
+			}
+		});
+		console.log(`Déconnexion du client ${socket.id}`);
+	});
+}
+
+function handleGameStart(socket) {
+	socket.on('start', s => {
+		if (s == true && cptConnexion != 0) {
+			gameStarted = s;
+		} else if (cptConnexion == 0) {
+			gameStarted = false;
+		}
+	});
+}
+
+function handleClickEvents(socket) {
+	socket.on('clickEvent', clickEvent => {
+		const playerAvatar = avatars.find(avatar => avatar.nom === clickEvent.id);
+		if (playerAvatar) {
+			playerAvatar.click[clickEvent.key] = clickEvent.pressed;
+		} else {
+			console.log(`Aucun avatar trouvé avec le nom ${clickEvent.id}`);
+		}
+	});
+}
+
+function handleShooting(socket) {
+	socket.on('shoot', shoot => {
+		const playerAvatar = avatars.find(avatar => avatar.nom === shoot.id);
+
+		if (canShoot) {
+			playerAvatar.tirer();
+			canShoot = false;
+			setTimeout(function () {
+				canShoot = true;
+			}, 200);
+		}
+	});
+}
+
+function handleCanvasSize(socket) {
+	socket.on('canvasSize', size => {
+		console.log(size);
+		canvasSize = size;
+	});
+}
 
 let spawnIntervalLV1 = setInterval(() => {
 	if (gameStarted) {
@@ -163,71 +201,31 @@ let spawnBonusInterval = setInterval(() => {
 }, 15000);
 
 setInterval(() => {
-	scores = gestionScore.afficherScores();
-	io.emit('scores', scores);
+	updateScores();
+
 	io.emit('enemis', enemis);
+
 	io.emit('bonusArray', bonusArray);
 
-	let areAvatarsActive = avatars.some(avatar => !avatar.spectateur);
+	const areAvatarsActive = avatars.some(avatar => !avatar.spectateur);
 
+	// Si des avatars sont actifs
 	if (firstAvatar && areAvatarsActive) {
-		let avatarData = [];
+		const avatarData = [];
+
 		avatars.forEach(avatar => {
 			avatar.canvasSize = canvasSize;
-			if (
-				avatar.getStatut() == 'invincibilite' &&
-				t.getTotalTime() - avatar.getStatutTime() == 15
-			) {
-				avatar.setStatut('null');
-			}
-			enemis.forEach(enemi => {
-				if (
-					enemi.hitbox.colision(avatar.hitbox) &&
-					avatar.getStatut() != 'invincibilite' &&
-					!avatar.spectateur
-				) {
-					if (canLostLifeAvatar) {
-						avatar.decrementScore(5);
-						enemis.splice(enemis.indexOf(enemi), 1);
-						avatar.perdreVie();
-						canLostLifeAvatar = false;
-						setTimeout(function () {
-							canLostLifeAvatar = true;
-						}, 100);
-					}
-					if (avatar.getVies() == 0) {
-						gestionScore.ajouterScore(avatar.pseudo, avatar.score);
 
-						avatar.setSpectateur();
-						io.emit('dead', avatar.id);
-					}
-				}
+			updateInvincibilityStatus(avatar);
 
-				enemi.deplacer();
-				avatar.colision(enemi.hitbox);
-				avatar.projectiles.forEach(projectile => {
-					if (projectile.hitbox.colision(enemi.hitbox)) {
-						if (enemi.getVies() < 0) {
-							console.log(avatar.id);
-							avatar.incrementScore(5);
-							enemis.splice(enemis.indexOf(enemi), 1);
-						}
-						avatar.projectiles.splice(
-							avatar.projectiles.indexOf(projectile),
-							1
-						);
-						if (canLostLifeEnemi) {
-							enemi.perdreVie();
-							canLostLifeEnemi = false;
-							setTimeout(function () {
-								canLostLifeEnemi = true;
-							}, 1000 / 60);
-						}
-					}
-				});
-			});
-			avatar.deplacer();
-			avatar.projectiles.forEach(projectile => projectile.deplacer());
+			handleAvatarEnemyCollisions(avatar);
+
+			moveEnemies();
+
+			handleAvatarProjectileCollisions(avatar);
+
+			moveAvatarsAndProjectiles(avatar);
+
 			if (!avatar.spectateur) {
 				avatarData.push({
 					id: avatar.id,
@@ -239,27 +237,110 @@ setInterval(() => {
 					socketId: avatar.nom,
 				});
 			}
-			bonusArray.forEach(bonus => {
-				if (bonus.hitbox.colision(avatar.hitbox)) {
-					if (bonusNoms[bonus.getChoix()] == 'vie') {
-						avatar.gagnerVie();
-					} else if (bonusNoms[bonus.getChoix()] == 'invincibilite') {
-						avatar.setStatut('invincibilite');
-						avatar.setStatutTime(t.getTotalTime());
-					}
-					bonusArray.splice(bonusArray.indexOf(bonus), 1);
-				}
-				if (bonus.estExpire(t.getTotalTime())) {
-					bonusArray.splice(bonusArray.indexOf(bonus), 1);
-				}
-			});
+
+			handleAvatarBonusCollisions(avatar);
 		});
+
 		io.emit('avatarsData', avatarData);
 	} else {
-		gameStarted = false;
-		cpt = 0;
-		t = new timer();
-		avatars.length = 0; // Réinitialiser le tableau d'avatars
-		io.emit('endGame', true);
+		stopGame();
 	}
 }, 1000 / 60);
+
+function updateScores() {
+	scores = gestionScore.afficherScores();
+	io.emit('scores', scores);
+}
+
+function updateInvincibilityStatus(avatar) {
+	if (
+		avatar.getStatut() == 'invincibilite' &&
+		t.getTotalTime() - avatar.getStatutTime() == 15
+	) {
+		avatar.setStatut('null');
+	}
+}
+
+function handleAvatarEnemyCollisions(avatar) {
+	enemis.forEach(enemi => {
+		if (
+			enemi.hitbox.colision(avatar.hitbox) &&
+			avatar.getStatut() != 'invincibilite' &&
+			!avatar.spectateur
+		) {
+			if (canLostLifeAvatar) {
+				avatar.decrementScore(5);
+				enemis.splice(enemis.indexOf(enemi), 1);
+				avatar.perdreVie();
+				canLostLifeAvatar = false;
+				setTimeout(function () {
+					canLostLifeAvatar = true;
+				}, 100);
+			}
+			if (avatar.getVies() == 0) {
+				gestionScore.ajouterScore(avatar.pseudo, avatar.score);
+				avatar.setSpectateur();
+				io.emit('dead', avatar.id);
+			}
+		}
+	});
+}
+
+function moveEnemies() {
+	enemis.forEach(enemi => {
+		enemi.deplacer();
+	});
+}
+
+function handleAvatarProjectileCollisions(avatar) {
+	enemis.forEach(enemi => {
+		avatar.projectiles.forEach(projectile => {
+			if (projectile.hitbox.colision(enemi.hitbox)) {
+				if (enemi.getVies() < 0) {
+					avatar.incrementScore(5);
+					enemis.splice(enemis.indexOf(enemi), 1);
+				}
+				avatar.projectiles.splice(avatar.projectiles.indexOf(projectile), 1);
+				if (canLostLifeEnemi) {
+					enemi.perdreVie();
+					canLostLifeEnemi = false;
+					setTimeout(function () {
+						canLostLifeEnemi = true;
+					}, 1000 / 60);
+				}
+			}
+		});
+	});
+}
+
+function moveAvatarsAndProjectiles(avatar) {
+	avatar.deplacer();
+	avatar.projectiles.forEach(projectile => {
+		projectile.deplacer();
+	});
+}
+
+function handleAvatarBonusCollisions(avatar) {
+	bonusArray.forEach(bonus => {
+		if (bonus.hitbox.colision(avatar.hitbox)) {
+			if (bonusNoms[bonus.getChoix()] == 'vie') {
+				avatar.gagnerVie();
+			} else if (bonusNoms[bonus.getChoix()] == 'invincibilite') {
+				avatar.setStatut('invincibilite');
+				avatar.setStatutTime(t.getTotalTime());
+			}
+			bonusArray.splice(bonusArray.indexOf(bonus), 1);
+		}
+		if (bonus.estExpire(t.getTotalTime())) {
+			bonusArray.splice(bonusArray.indexOf(bonus), 1);
+		}
+	});
+}
+
+function stopGame() {
+	gameStarted = false;
+	cptConnexion = 0;
+	t = new timer();
+	avatars.length = 0;
+	io.emit('endGame', true);
+}

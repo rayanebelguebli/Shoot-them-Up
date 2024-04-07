@@ -1,30 +1,6 @@
 {
   "results": [
     {
-      "nom": "julien",
-      "score": -15
-    },
-    {
-      "nom": "julien",
-      "score": -15
-    },
-    {
-      "nom": "julien",
-      "score": -15
-    },
-    {
-      "nom": "julien2",
-      "score": -10
-    },
-    {
-      "nom": "j",
-      "score": -10
-    },
-    {
-      "nom": "test",
-      "score": -15
-    },
-    {
       "nom": "pierre",
       "score": 20
     },
@@ -33,89 +9,57 @@
       "score": -15
     },
     {
-      "nom": "p",
-      "score": 30
-    },
-    {
-      "nom": "pp",
-      "score": -15
-    },
-    {
-      "nom": "ma",
-      "score": 70
-    },
-    {
-      "nom": "ppapa",
-      "score": 40
-    },
-    {
-      "nom": "mm",
-      "score": 55
-    },
-    {
-      "score": -15
-    },
-    {
-      "nom": "testtt",
-      "score": -15
-    },
-    {
-      "score": -5
-    },
-    {
-      "nom": "test",
       "score": -15
     },
     {
       "nom": "m",
-      "score": 20
-    },
-    {
-      "nom": "m`",
-      "score": -15
-    },
-    {
-      "nom": "p",
-      "score": 5
-    },
-    {
-      "nom": "m",
-      "score": -25
-    },
-    {
-      "nom": "test",
-      "score": -10
-    },
-    {
-      "nom": "p",
-      "score": -15
-    },
-    {
-      "nom": "^",
       "score": -15
     },
     {
       "nom": "m",
-      "score": -5
-    },
-    {
-      "nom": "tes",
-      "score": -15
-    },
-    {
-      "score": -10
-    },
-    {
-      "nom": "p",
       "score": 0
     },
     {
       "nom": "m",
-      "score": 5
+      "score": 0
     },
     {
-      "nom": "p",
+      "nom": "anne",
+      "score": -5
+    },
+    {
+      "nom": "test2",
       "score": -10
+    },
+    {
+      "score": -15
+    },
+    {
+      "score": -15
+    },
+    {
+      "nom": "ff",
+      "score": -15
+    },
+    {
+      "nom": "test2",
+      "score": -5
+    },
+    {
+      "nom": "mama",
+      "score": -15
+    },
+    {
+      "nom": "te",
+      "score": -20
+    },
+    {
+      "nom": "f",
+      "score": 0
+    },
+    {
+      "nom": "f",
+      "score": -15
     }
   ]
 }
