@@ -9,13 +9,21 @@ export class GestionScore {
 		try {
 			const data = fs.readFileSync(this.jsonFilePath);
 			const scores = JSON.parse(data);
+
+			// Trier les scores par ordre décroissant
+			scores.results.sort((a, b) => b.score - a.score);
+
 			let html =
 				'<table><thead><tr><th>Nom</th><th>Score</th></tr></thead><tbody>';
-			scores.results.forEach(result => {
-				html += `<tr><td>${result.nom}</td><td>${result.score}</td></tr>`;
-			});
-			html += '</tbody></table>';
 
+			// Afficher les 10 premiers résultats
+			const numberOfResults = Math.min(10, scores.results.length);
+			for (let i = 0; i < numberOfResults; i++) {
+				const result = scores.results[i];
+				html += `<tr><td>${result.nom}</td><td>${result.score}</td></tr>`;
+			}
+
+			html += '</tbody></table>';
 			return html;
 		} catch (error) {
 			console.error('Erreur lors de la lecture du fichier JSON :', error);

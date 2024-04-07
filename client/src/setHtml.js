@@ -1,4 +1,3 @@
-import { GestionScore } from './GestionScoresClient.js';
 export default class setHtml {
 	static credits() {
 		return `

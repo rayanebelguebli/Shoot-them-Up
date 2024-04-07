@@ -7,7 +7,7 @@ import enemi from './enemis.js';
 import { Coordinate } from '../common/Coordinate.js';
 import timer from './timer.js';
 import Bonus from './bonus.js';
-import { bonusImages, bonusNoms, bonusTaille } from '../common/utils.js';
+import { bonusNoms } from '../common/utils.js';
 import { GestionScore } from './ScoreBoard.js';
 
 const app = express();
@@ -183,7 +183,8 @@ setInterval(() => {
 			enemis.forEach(enemi => {
 				if (
 					enemi.hitbox.colision(avatar.hitbox) &&
-					avatar.getStatut() != 'invincibilite'
+					avatar.getStatut() != 'invincibilite' &&
+					!avatar.spectateur
 				) {
 					if (canLostLifeAvatar) {
 						avatar.decrementScore(5);
@@ -201,14 +202,16 @@ setInterval(() => {
 						io.emit('dead', avatar.id);
 					}
 				}
-				if (enemi.getVies() < 0) {
-					avatar.incrementScore(5);
-					enemis.splice(enemis.indexOf(enemi), 1);
-				}
+
 				enemi.deplacer();
 				avatar.colision(enemi.hitbox);
 				avatar.projectiles.forEach(projectile => {
 					if (projectile.hitbox.colision(enemi.hitbox)) {
+						if (enemi.getVies() < 0) {
+							console.log(avatar.id);
+							avatar.incrementScore(5);
+							enemis.splice(enemis.indexOf(enemi), 1);
+						}
 						avatar.projectiles.splice(
 							avatar.projectiles.indexOf(projectile),
 							1
