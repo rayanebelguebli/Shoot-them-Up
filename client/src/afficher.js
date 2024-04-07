@@ -8,13 +8,12 @@ export default class Afficher {
 		this.gameStarted = false;
 		this.afficherMenu = this.afficherMenu.bind(this);
 		this.startGame = this.startGame.bind(this);
+		this.afficherScores = this.afficherScores.bind(this);
 	}
 
 	afficherCredits(event) {
-		//event.preventDefault();
+		event.preventDefault();
 		document.querySelector('.divMain').innerHTML = setHtml.credits();
-		console.log(document.querySelector('.retourMenu'));
-		console.log(divMain.innerHTML);
 		document
 			.querySelector('.retourMenu')
 			.addEventListener('click', this.afficherMenu);
@@ -27,9 +26,7 @@ export default class Afficher {
 		document
 			.querySelector('.buttonStart')
 			.addEventListener('click', this.startGame);
-		document
-			.querySelector('.credits')
-			.addEventListener('click', this.afficherCredits);
+
 		location.reload();
 	}
 
@@ -61,5 +58,19 @@ export default class Afficher {
 
 	isGameStarted() {
 		return this.gameStarted;
+	}
+
+	afficherScores(scores) {
+		const boutonRetourMenu = document.querySelector('.retourMenu');
+		if (boutonRetourMenu) {
+			boutonRetourMenu.removeEventListener('click', this.afficherMenu);
+		}
+
+		document.querySelector('.divMain').innerHTML =
+			scores + `<button class="retourMenu">Retour au menu</button>`;
+
+		document
+			.querySelector('.retourMenu')
+			.addEventListener('click', this.afficherMenu);
 	}
 }

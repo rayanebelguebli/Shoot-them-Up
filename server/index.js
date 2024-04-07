@@ -52,6 +52,7 @@ let LVL2start = false;
 let LVL3start = false;
 let firstAvatar = false;
 const gestionScore = new GestionScore('client/src/scoreboard.json');
+let scores = gestionScore.afficherScores();
 
 io.on('connection', socket => {
 	cpt++;
@@ -63,6 +64,7 @@ io.on('connection', socket => {
 		socket.on('pseudo', pseudo => {
 			avatar.pseudo = pseudo;
 		});
+		io.emit('scores', scores);
 
 		socket.on('disconnect', () => {
 			avatars.forEach(avatar => {
@@ -191,7 +193,11 @@ setInterval(() => {
 						}, 100);
 					}
 					if (avatar.getVies() == 0) {
+						scores = gestionScore.afficherScores();
+						io.emit('scores', scores);
+
 						gestionScore.ajouterScore(avatar.pseudo, avatar.score);
+
 						avatar.setSpectateur();
 						io.emit('dead', avatar.id);
 					}

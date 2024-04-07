@@ -13,6 +13,12 @@ let renderObject = new Render();
 const affichage = new Afficher();
 let gameStarted = false;
 
+let clientScores = '';
+
+socket.on('scores', scores => {
+	clientScores = scores;
+});
+
 const canvas = document.querySelector('.gameCanvas');
 const context = canvas.getContext('2d');
 const avatar = new Avatar('1', 1);
@@ -184,3 +190,6 @@ socket.once('endGame', () => {
 		avatarsScore[4]
 	);
 });
+document
+	.querySelector('.scoreBoard')
+	.addEventListener('click', () => affichage.afficherScores(clientScores));

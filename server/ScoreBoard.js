@@ -9,10 +9,17 @@ export class GestionScore {
 		try {
 			const data = fs.readFileSync(this.jsonFilePath);
 			const scores = JSON.parse(data);
-			console.log('Scores actuels :');
-			console.log(scores.results);
+			let html =
+				'<table><thead><tr><th>Nom</th><th>Score</th></tr></thead><tbody>';
+			scores.results.forEach(result => {
+				html += `<tr><td>${result.nom}</td><td>${result.score}</td></tr>`;
+			});
+			html += '</tbody></table>';
+
+			return html;
 		} catch (error) {
 			console.error('Erreur lors de la lecture du fichier JSON :', error);
+			return null;
 		}
 	}
 

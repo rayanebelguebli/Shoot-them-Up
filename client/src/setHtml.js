@@ -1,3 +1,4 @@
+import { GestionScore } from './GestionScoresClient.js';
 export default class setHtml {
 	static credits() {
 		return `
@@ -39,5 +40,9 @@ export default class setHtml {
 		<button class="buttonStart">Play</button>
 		<button>ScoreBoard</button>
 		<button class="credits">Credits</button>`;
+	}
+
+	static scoreBoard(scores) {
+		return scores;
 	}
 }
