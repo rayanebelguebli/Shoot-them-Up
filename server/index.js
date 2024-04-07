@@ -163,6 +163,8 @@ let spawnBonusInterval = setInterval(() => {
 }, 15000);
 
 setInterval(() => {
+	scores = gestionScore.afficherScores();
+	io.emit('scores', scores);
 	io.emit('enemis', enemis);
 	io.emit('bonusArray', bonusArray);
 
@@ -193,9 +195,6 @@ setInterval(() => {
 						}, 100);
 					}
 					if (avatar.getVies() == 0) {
-						scores = gestionScore.afficherScores();
-						io.emit('scores', scores);
-
 						gestionScore.ajouterScore(avatar.pseudo, avatar.score);
 
 						avatar.setSpectateur();

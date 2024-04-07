@@ -1,42 +1,28 @@
 {
   "results": [
     {
-      "nom": "Joueur 1",
-      "score": 100
-    },
-    {
+      "nom": "julien",
       "score": -15
     },
     {
-      "nom": "dd",
+      "nom": "julien",
       "score": -15
     },
     {
+      "nom": "julien",
       "score": -15
     },
     {
-      "score": -15
-    },
-    {
-      "nom": "dd",
-      "score": -15
-    },
-    {
-      "nom": "dd",
-      "score": -15
-    },
-    {
-      "score": -15
-    },
-    {
-      "score": -15
-    },
-    {
-      "nom": "dd",
-      "score": -15
-    },
-    {
+      "nom": "julien2",
       "score": -10
+    },
+    {
+      "nom": "j",
+      "score": -10
+    },
+    {
+      "nom": "test",
+      "score": -15
     }
   ]
 }
