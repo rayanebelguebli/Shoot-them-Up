@@ -15,8 +15,9 @@ export class Avatar extends Entite {
 	statut;
 	statutTime;
 	spectateur;
+	pseudo;
 
-	constructor(nom, id, canvasSize) {
+	constructor(nom, id, canvasSize, pseudo) {
 		super(0, 0, new Hitbox(68, 145, 0, 0), null);
 		this.nom = nom;
 		this.score = 0;
@@ -30,6 +31,7 @@ export class Avatar extends Entite {
 		this.canvasSize = canvasSize;
 		this.id = id;
 		this.spectateur = false;
+		this.pseudo = pseudo;
 	}
 
 	setSpectateur() {

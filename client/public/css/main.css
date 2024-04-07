@@ -61,9 +61,7 @@ button {
   text-align: center;
   text-decoration: none;
   transition: all .15s;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
+
 }
 
 button:hover {
@@ -160,6 +158,4 @@ section .air.air4{
   100%{
     background-position-x: -1000px; 
   }
-}.hidden {
-  display: none;
 }

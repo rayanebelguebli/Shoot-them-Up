@@ -78,4 +78,39 @@ export default class Render {
 			.getContext('2d')
 			.drawImage(this.background, 0, 0, canvas.width, canvas.height);
 	}
+	renderProjectiles(context, avatars) {
+		for (const avatarId in avatars) {
+			const avatar = avatars[avatarId];
+			context.drawImage(avatar.image, avatar.x, avatar.y);
+			if (avatar.projectiles) {
+				avatar.projectiles.forEach(projectile => {
+					context.drawImage(this.imageProjectile, projectile.x, projectile.y);
+				});
+			}
+		}
+	}
+
+	renderBonuses(canvas, context, bonuses) {
+		bonuses.forEach(bonus => {
+			let img = new Image();
+			img.src = bonusImages[bonus.choix];
+			img.width = 75;
+			img.height = 75;
+			draw(canvas, context, img, bonus.x, bonus.y);
+		});
+	}
+
+	renderEnemies(canvas, context, enemies) {
+		enemies.forEach(enemy => {
+			let image;
+			if (enemy.difficulté == 1) {
+				image = this.imageEnemi;
+			} else if (enemy.difficulté == 2) {
+				image = this.imageEnemi2;
+			} else if (enemy.difficulté == 3) {
+				image = this.imageEnemi3;
+			}
+			draw(canvas, context, image, enemy.x, enemy.y);
+		});
+	}
 }

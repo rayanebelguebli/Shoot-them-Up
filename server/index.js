@@ -1,4 +1,3 @@
-// server.js
 import express from 'express';
 import http from 'http';
 import addWebpackMiddleware from './middlewares/addWebpackMiddleware.js';
@@ -9,33 +8,30 @@ import { Coordinate } from '../common/Coordinate.js';
 import timer from './timer.js';
 import Bonus from './bonus.js';
 import { bonusImages, bonusNoms, bonusTaille } from '../common/utils.js';
+import { GestionScore } from './ScoreBoard.js';
 
 const app = express();
-const httpServer = http.createServer(app);
-const io = new IOServer(httpServer);
 
-const canvasSize = new Coordinate(1920, 1261);
-let gameStarted = false;
-let t = new timer();
+let canvasSize = new Coordinate(1920, 1261);
+
 let canLostLifeAvatar = true;
 let canLostLifeEnemi = true;
-let firstAvatar = false;
-let cptConnexion = 0;
-let canShoot = true;
-let LVL2start = false;
-let LVL3start = false;
-const avatars = [];
-const enemis = [];
-const bonusArray = [];
+let gameStarted = false;
+
+let t = new timer();
+
+const httpServer = http.createServer(app);
+const fileOptions = { root: process.cwd() };
+addWebpackMiddleware(app);
+
+const io = new IOServer(httpServer);
 
 app.use(express.static('client/public'));
-const port = process.env.PORT == null ? 8000 : process.env.PORT;
 
+const port = process.env.PORT == null ? 8000 : process.env.PORT;
 httpServer.listen(port, () => {
 	console.log(`Server running at http://localhost:${port}/`);
 });
-
-addWebpackMiddleware(app);
 
 setInterval(function () {
 	if (gameStarted) {
@@ -46,87 +42,109 @@ setInterval(function () {
 	}
 }, 1000);
 
+const avatars = [];
+const enemis = [];
+const bonusArray = [];
+
+let cpt = 0;
+let canShoot = true;
+let LVL2start = false;
+let LVL3start = false;
+let firstAvatar = false;
+const gestionScore = new GestionScore('client/src/scoreboard.json');
+
 io.on('connection', socket => {
-	cptConnexion++;
-	if (cptConnexion <= 4) {
+	cpt++;
+	if (cpt <= 4) {
 		firstAvatar = true;
-		const avatar = new Avatar(`${socket.id}`, cptConnexion);
-		io.emit('newAvatar', {
-			id: cptConnexion,
-			x: avatar.getX(),
-			y: avatar.getY(),
-		});
+		const avatar = new Avatar(`${socket.id}`, cpt);
+		io.emit('newAvatar', { id: cpt, x: avatar.getX(), y: avatar.getY() });
 		avatars.push(avatar);
+		socket.on('pseudo', pseudo => {
+			avatar.pseudo = pseudo;
+		});
 
 		socket.on('disconnect', () => {
-			const disconnectedAvatarIndex = avatars.findIndex(
-				avatar => avatar.nom === socket.id
-			);
-			if (disconnectedAvatarIndex !== -1) {
-				io.emit('disconnectEvent', avatars[disconnectedAvatarIndex].id);
-				avatars.splice(disconnectedAvatarIndex, 1);
-			}
-			console.log(`Client disconnected: ${socket.id}`);
+			avatars.forEach(avatar => {
+				if (avatar.nom == socket.id) {
+					io.emit('disconnectEvent', avatar.id);
+					avatars.splice(avatars.indexOf(avatar), 1);
+				}
+			});
+			console.log(`Déconnexion du client ${socket.id}`);
 		});
 
 		socket.on('start', s => {
-			if (s && cptConnexion !== 0) {
+			if (s == true && cpt != 0) {
 				gameStarted = s;
-			} else if (cptConnexion === 0) {
+			} else if (cpt == 0) {
 				gameStarted = false;
 			}
 		});
 
-		// Handling click events
 		socket.on('clickEvent', clickEvent => {
 			const playerAvatar = avatars.find(avatar => avatar.nom === clickEvent.id);
 			if (playerAvatar) {
 				playerAvatar.click[clickEvent.key] = clickEvent.pressed;
 			} else {
-				console.log(`No avatar found with the name ${clickEvent.id}`);
+				console.log(`Aucun avatar trouvé avec le nom ${clickEvent.id}`);
 			}
 		});
 
 		socket.on('shoot', shoot => {
 			const playerAvatar = avatars.find(avatar => avatar.nom === shoot.id);
-			if (canShoot && playerAvatar) {
+
+			if (canShoot) {
 				playerAvatar.tirer();
 				canShoot = false;
-				setTimeout(() => {
+				setTimeout(function () {
 					canShoot = true;
 				}, 200);
 			}
 		});
 
 		socket.on('canvasSize', canvasSize => {
+			console.log(canvasSize);
 			canvasSize = canvasSize;
 		});
 	}
 });
 
-const spawnIntervals = [
-	{ delay: 1000, startCondition: () => gameStarted },
-	{ delay: 800, startCondition: () => LVL2start && gameStarted },
-	{ delay: 4000, startCondition: () => LVL3start && gameStarted },
-];
-
-spawnIntervals.forEach(({ delay, startCondition }, index) => {
-	setInterval(() => {
-		if (startCondition()) {
-			let randomY =
-				Math.random() * (canvasSize.height - (index === 0 ? 0 : 100));
-			const newEnemy = new enemi(
-				canvasSize.width - (index === 0 ? 0 : 100),
-				randomY,
-				index,
-				index + 1
-			);
-			enemis.push(newEnemy);
+let spawnIntervalLV1 = setInterval(() => {
+	if (gameStarted) {
+		if (t.getMin() >= 1) {
+			LVL2start = true;
 		}
-	}, delay);
-});
+		if (t.getSec() >= 30) {
+			LVL3start = true;
+		}
 
-setInterval(() => {
+		let randomY = Math.random() * (canvasSize.height - 0) + 0;
+		do {
+			randomY = Math.random() * (canvasSize.height - 0) + 0;
+		} while (randomY > canvasSize.height - 57);
+		const newEnemy = new enemi(canvasSize.width, randomY, 0, 1);
+		enemis.push(newEnemy);
+	}
+}, 1000);
+
+let spawnIntervalLV2 = setInterval(() => {
+	if (LVL2start && gameStarted) {
+		let randomY = Math.random() * (canvasSize.height - 100);
+		const newEnemy = new enemi(canvasSize.width - 100, randomY, 1, 2);
+		enemis.push(newEnemy);
+	}
+}, 800);
+
+let spawnIntervalLV3 = setInterval(() => {
+	if (LVL3start && gameStarted) {
+		let randomY = Math.random() * (canvasSize.height - 100);
+		const newEnemy = new enemi(canvasSize.width - 100, randomY, 1, 3);
+		enemis.push(newEnemy);
+	}
+}, 4000);
+
+let spawnBonusInterval = setInterval(() => {
 	if (gameStarted) {
 		let randomX;
 		let randomY;
@@ -143,140 +161,97 @@ setInterval(() => {
 }, 15000);
 
 setInterval(() => {
-	updateGame();
-}, 1000 / 60);
-
-function updateGame() {
 	io.emit('enemis', enemis);
 	io.emit('bonusArray', bonusArray);
 
-	const areAvatarsActive = avatars.some(avatar => !avatar.spectateur);
+	let areAvatarsActive = avatars.some(avatar => !avatar.spectateur);
 
 	if (firstAvatar && areAvatarsActive) {
-		handleActiveAvatars();
-	} else {
-		endGame();
-	}
-}
-
-function handleActiveAvatars() {
-	const avatarData = [];
-	avatars.forEach(avatar => {
-		updateAvatar(avatar, avatarData);
-	});
-	io.emit('avatarsData', avatarData);
-}
-
-function updateAvatar(avatar, avatarData) {
-	avatar.canvasSize = canvasSize;
-	if (
-		avatar.getStatut() === 'invincibilite' &&
-		t.getTotalTime() - avatar.getStatutTime() === 15
-	) {
-		avatar.setStatut('null');
-	}
-
-	enemis.forEach(enemi => {
-		handleAvatarEnemiCollisions(avatar, enemi);
-	});
-
-	avatar.deplacer();
-	avatar.projectiles.forEach(projectile => projectile.deplacer());
-
-	if (!avatar.spectateur) {
-		avatarData.push({
-			id: avatar.id,
-			x: avatar.getX(),
-			y: avatar.getY(),
-			projectiles: avatar.projectiles,
-			vies: avatar.getVies(),
-			score: avatar.getScore(),
-			socketId: avatar.nom,
+		let avatarData = [];
+		avatars.forEach(avatar => {
+			avatar.canvasSize = canvasSize;
+			if (
+				avatar.getStatut() == 'invincibilite' &&
+				t.getTotalTime() - avatar.getStatutTime() == 15
+			) {
+				avatar.setStatut('null');
+			}
+			enemis.forEach(enemi => {
+				if (
+					enemi.hitbox.colision(avatar.hitbox) &&
+					avatar.getStatut() != 'invincibilite'
+				) {
+					if (canLostLifeAvatar) {
+						avatar.decrementScore(5);
+						enemis.splice(enemis.indexOf(enemi), 1);
+						avatar.perdreVie();
+						canLostLifeAvatar = false;
+						setTimeout(function () {
+							canLostLifeAvatar = true;
+						}, 100);
+					}
+					if (avatar.getVies() == 0) {
+						gestionScore.ajouterScore(avatar.pseudo, avatar.score);
+						avatar.setSpectateur();
+						io.emit('dead', avatar.id);
+					}
+				}
+				if (enemi.getVies() < 0) {
+					avatar.incrementScore(5);
+					enemis.splice(enemis.indexOf(enemi), 1);
+				}
+				enemi.deplacer();
+				avatar.colision(enemi.hitbox);
+				avatar.projectiles.forEach(projectile => {
+					if (projectile.hitbox.colision(enemi.hitbox)) {
+						avatar.projectiles.splice(
+							avatar.projectiles.indexOf(projectile),
+							1
+						);
+						if (canLostLifeEnemi) {
+							enemi.perdreVie();
+							canLostLifeEnemi = false;
+							setTimeout(function () {
+								canLostLifeEnemi = true;
+							}, 1000 / 60);
+						}
+					}
+				});
+			});
+			avatar.deplacer();
+			avatar.projectiles.forEach(projectile => projectile.deplacer());
+			if (!avatar.spectateur) {
+				avatarData.push({
+					id: avatar.id,
+					x: avatar.getX(),
+					y: avatar.getY(),
+					projectiles: avatar.projectiles,
+					vies: avatar.getVies(),
+					score: avatar.getScore(),
+					socketId: avatar.nom,
+				});
+			}
+			bonusArray.forEach(bonus => {
+				if (bonus.hitbox.colision(avatar.hitbox)) {
+					if (bonusNoms[bonus.getChoix()] == 'vie') {
+						avatar.gagnerVie();
+					} else if (bonusNoms[bonus.getChoix()] == 'invincibilite') {
+						avatar.setStatut('invincibilite');
+						avatar.setStatutTime(t.getTotalTime());
+					}
+					bonusArray.splice(bonusArray.indexOf(bonus), 1);
+				}
+				if (bonus.estExpire(t.getTotalTime())) {
+					bonusArray.splice(bonusArray.indexOf(bonus), 1);
+				}
+			});
 		});
+		io.emit('avatarsData', avatarData);
+	} else {
+		gameStarted = false;
+		cpt = 0;
+		t = new timer();
+		avatars.length = 0; // Réinitialiser le tableau d'avatars
+		io.emit('endGame', true);
 	}
-
-	handleAvatarBonusCollisions(avatar);
-}
-
-function handleAvatarEnemiCollisions(avatar, enemi) {
-	if (
-		enemi.hitbox.colision(avatar.hitbox) &&
-		avatar.getStatut() !== 'invincibilite'
-	) {
-		handleAvatarEnemiCollisionEffects(avatar, enemi);
-	}
-
-	if (enemi.getVies() < 0) {
-		avatar.incrementScore(5);
-		enemis.splice(enemis.indexOf(enemi), 1);
-	}
-
-	enemi.deplacer();
-
-	avatar.projectiles.forEach(projectile => {
-		if (projectile.hitbox.colision(enemi.hitbox)) {
-			avatar.projectiles.splice(avatar.projectiles.indexOf(projectile), 1);
-			handleProjectileEnemiCollisionEffects(avatar, enemi);
-		}
-	});
-}
-
-function handleAvatarEnemiCollisionEffects(avatar, enemi) {
-	avatar.decrementScore(5);
-	enemis.splice(enemis.indexOf(enemi), 1);
-	avatar.perdreVie();
-
-	if (canLostLifeAvatar) {
-		canLostLifeAvatar = false;
-		setTimeout(() => {
-			canLostLifeAvatar = true;
-		}, 100);
-	}
-
-	if (avatar.getVies() === 0) {
-		avatar.setSpectateur();
-		io.emit('dead', avatar.id);
-	}
-}
-
-function handleProjectileEnemiCollisionEffects(enemi) {
-	enemi.perdreVie();
-
-	if (canLostLifeEnemi) {
-		canLostLifeEnemi = false;
-		setTimeout(() => {
-			canLostLifeEnemi = true;
-		}, 1000 / 60);
-	}
-}
-
-function handleAvatarBonusCollisions(avatar) {
-	bonusArray.forEach(bonus => {
-		if (bonus.hitbox.colision(avatar.hitbox)) {
-			handleBonusCollisionEffects(avatar, bonus);
-		}
-
-		if (bonus.estExpire(t.getTotalTime())) {
-			bonusArray.splice(bonusArray.indexOf(bonus), 1);
-		}
-	});
-}
-
-function handleBonusCollisionEffects(avatar, bonus) {
-	if (bonusNoms[bonus.getChoix()] === 'vie') {
-		avatar.gagnerVie();
-	} else if (bonusNoms[bonus.getChoix()] === 'invincibilite') {
-		avatar.setStatut('invincibilite');
-		avatar.setStatutTime(t.getTotalTime());
-	}
-
-	bonusArray.splice(bonusArray.indexOf(bonus), 1);
-}
-
-function endGame() {
-	gameStarted = false;
-	cptConnexion = 0;
-	t = new timer();
-	avatars.length = 0;
-	io.emit('endGame', true);
-}
+}, 1000 / 60);

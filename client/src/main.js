@@ -47,6 +47,21 @@ function startGame(event) {
 	socket.emit('canvasSize', canvasSize);
 }
 
+document.querySelector('.buttonStart').addEventListener('click', inputPseudo);
+
+function inputPseudo(event) {
+	const pseudo = prompt('Veuillez saisir votre pseudo :');
+
+	if (pseudo !== null && pseudo.trim() !== '') {
+		socket.emit('pseudo', pseudo);
+
+		const canvasSize = affichage.startGame(event, canvas);
+		socket.emit('canvasSize', canvasSize);
+	} else {
+		alert('Veuillez saisir un pseudo valide');
+	}
+}
+
 const canvasResizeObserver = new ResizeObserver(() => resampleCanvas());
 canvasResizeObserver.observe(canvas);
 
@@ -62,6 +77,12 @@ function render() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	renderObject.renderBackground(canvas);
 	gameStarted = affichage.isGameStarted();
+	socket.on('enemis', data => {
+		newEnemis = data;
+	});
+	socket.on('bonusArray', data => {
+		newBonus = data;
+	});
 
 	if (gameStarted) {
 		context.font = '40pt New Super Mario Font U';
@@ -90,10 +111,6 @@ function renderProjectiles() {
 }
 
 function renderBonuses() {
-	socket.on('bonusArray', data => {
-		newBonus = data;
-	});
-
 	newBonus.forEach(bonus => {
 		const img = new Image();
 		img.src = bonusImages[bonus.choix];
@@ -104,10 +121,6 @@ function renderBonuses() {
 }
 
 function renderEnemies() {
-	socket.on('enemis', data => {
-		newEnemis = data;
-	});
-
 	newEnemis.forEach(enemi => {
 		renderObject.renderEnnemi(canvas, context, enemi.x, enemi.y, enemi);
 	});
