@@ -8,9 +8,9 @@ describe('Projectile, déplacer ', () => {
 		const projectile = new Projectile(0, 0, image);
 		assert.strictEqual(projectile.getX(), 0);
 		projectile.deplacer();
-		assert.strictEqual(projectile.getX(), 5);
-		projectile.deplacer();
 		assert.strictEqual(projectile.getX(), 10);
+		projectile.deplacer();
+		assert.strictEqual(projectile.getX(), 20);
 	});
 
 	it('devrait ne pas faire déplacer le projectile en y', () => {
