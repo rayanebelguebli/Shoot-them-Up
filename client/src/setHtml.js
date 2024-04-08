@@ -2,6 +2,8 @@ export default class setHtml {
 	static credits() {
 		return `
         <p>Julien Bouin 33%</p>
+		<p> Pseudo : Jogz </p>
+		<p> jeu préféré : Rocket League </p>
 		<p>Rayane Belguebli 33%</p>
 		<p>Mathis Decoster 33%</p>
 		<p>pseudo: Wakly</p>

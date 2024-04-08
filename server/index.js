@@ -51,7 +51,7 @@ let canShoot = true;
 let LVL2start = false;
 let LVL3start = false;
 let firstAvatar = false;
-const gestionScore = new GestionScore('client/src/scoreboard.json');
+const gestionScore = new GestionScore('client/public/res/scoreboard.json');
 let scores = gestionScore.afficherScores();
 
 io.on('connection', socket => {
