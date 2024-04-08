@@ -60,6 +60,24 @@
     {
       "nom": "f",
       "score": -15
+    },
+    {
+      "nom": "pseudo",
+      "score": -20
+    },
+    {
+      "nom": "pseudo",
+      "score": -15
+    },
+    {
+      "score": -15
+    },
+    {
+      "nom": "uu",
+      "score": -15
+    },
+    {
+      "score": -15
     }
   ]
 }

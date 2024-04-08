@@ -14,14 +14,13 @@ export default class Afficher {
 	afficherCredits(event) {
 		event.preventDefault();
 		document.querySelector('.divMain').innerHTML = setHtml.credits();
-		document
-			.querySelector('.retourMenu')
-			.addEventListener('click', this.afficherMenu);
+		document.querySelector('.retourMenu').addEventListener('click', () => {
+			location.reload();
+		});
 	}
 
 	afficherMenu(event) {
 		event.preventDefault();
-		console.log('afficherMenu');
 		document.querySelector('.divMain').innerHTML = setHtml.menu();
 		document
 			.querySelector('.buttonStart')
