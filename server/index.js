@@ -325,7 +325,10 @@ function handleAvatarBonusCollisions(avatar) {
 		if (bonus.hitbox.colision(avatar.hitbox)) {
 			if (bonusNoms[bonus.getChoix()] == 'vie') {
 				avatar.gagnerVie();
-			} else if (bonusNoms[bonus.getChoix()] == 'invincibilite') {
+			} else if (
+				bonusNoms[bonus.getChoix()] == 'invincibilite' ||
+				!gameStarted
+			) {
 				avatar.setStatut('invincibilite');
 				avatar.setStatutTime(t.getTotalTime());
 			}

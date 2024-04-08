@@ -165,7 +165,7 @@ document.addEventListener('keyup', handleKeyEvent);
 function handleKeyEvent(event) {
 	keysPressed[event.keyCode] = event.type === 'keydown';
 
-	if (event.key === ' ') {
+	if (event.key === ' ' && gameStarted) {
 		socket.emit('shoot', {
 			id: `${socket.id}`,
 			shoot: true,
