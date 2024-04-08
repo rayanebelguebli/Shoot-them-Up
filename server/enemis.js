@@ -10,11 +10,11 @@ export default class enemi extends Entite {
 	difficulté;
 
 	constructor(x, y, image, difficulté) {
-		super(x, y, new Hitbox(50 / 2, 66, x, y), image);
+		super(x, y, new Hitbox(50 / 3, 66 / 2, x, y), image);
 		if (difficulté == 1) {
 			this.vx = 3;
 			this.vy = 0;
-			this.hitbox = new Hitbox(69 / 2, 57, this.x, this.y);
+			this.hitbox = new Hitbox(69 / 3, 57 / 2, this.x, this.y);
 		} else if (difficulté == 2) {
 			this.vx = 5;
 			this.vy = 1;
@@ -27,15 +27,6 @@ export default class enemi extends Entite {
 		this.amplitude = 20;
 		this.direction = 1;
 		this.positionInitialeY = y;
-	}
-
-	colision(x, y, image) {
-		return (
-			x >= this.x &&
-			x <= this.x + image.width &&
-			y >= this.y &&
-			y <= this.y + image.height
-		);
 	}
 
 	getVies() {

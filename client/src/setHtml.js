@@ -1,16 +1,17 @@
 export default class setHtml {
 	static credits() {
 		return `
-        <p>Julien Bouin 33%</p>
-		<p> Pseudo : Jogz </p>
-		<p> jeu préféré : Rocket League </p>
-		<p>Rayane Belguebli 33%</p>
-		<p> Pseudo : Rayanou </p>
-		<p> jeu préféré : Fifa </p>
-		<p>Mathis Decoster 33%</p>
-		<p>pseudo: Wakly</p>
-		<p>jeu préféré : Teamfight Tactics</p>
-		<p>Groupe H</p>
+		<h3>Groupe H</h3>
+		<h4>
+		<br>
+        <p>- Julien Bouin 33% / Pseudo : Jogz / jeu préféré : Rocket League </p>
+		 <br>
+		<p>- Rayane Belguebli 33% / Pseudo : Rayanou / jeu préféré : Fifa </p>
+		<br>
+		<p>- Mathis Decoster 33% / pseudo: Wakly / jeu préféré : Teamfight Tactics</p>
+		<br>
+
+		</h4>
 		<button class="retourMenu">Retour au menu</button>`;
 	}
 

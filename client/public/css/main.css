@@ -29,6 +29,28 @@ h1 em {
 	color: #777;
 }
 
+h3 {
+  font-family: 'New Super Mario Font U', sans-serif;
+  color: #1341d6;
+  font-size: 50px;
+}
+h3 em {
+	font-style: normal;
+	font-weight: bold;
+	color: #777;
+}
+
+h4 {
+  font-family: 'New Super Mario Font U', sans-serif;
+  color: #1341d6;
+  font-size: 25px;
+}
+h4 em {
+	font-style: normal;
+	font-weight: bold;
+	color: #777;
+}
+
 canvas {
  background-color: #000000;
 	border: 3px dashed #777;

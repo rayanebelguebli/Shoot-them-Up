@@ -308,7 +308,7 @@ function handleAvatarProjectileCollisions(avatar) {
 					canLostLifeEnemi = false;
 					setTimeout(function () {
 						canLostLifeEnemi = true;
-					}, 1000 / 60);
+					}, 100);
 				}
 			}
 		});

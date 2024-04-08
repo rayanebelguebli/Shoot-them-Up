@@ -6,7 +6,7 @@ export class Projectile extends Entite {
 	vitesse;
 
 	constructor(x, y, image) {
-		super(x, y, new Hitbox(122, 68, x, y), image);
+		super(x, y, new Hitbox(122 / 2, 68, x, y), image);
 		this.vitesse = 10;
 	}
 

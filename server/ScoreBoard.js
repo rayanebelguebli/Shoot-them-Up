@@ -13,12 +13,12 @@ export class GestionScore {
 			scores.results.sort((a, b) => b.score - a.score);
 
 			let html =
-				'<table><thead><tr><th>Nom</th><th>Score</th></tr></thead><tbody>';
+				'<table><thead><tr><th><h4>Nom</h4></th><th><h4>Score</h4></th></tr></thead><tbody>';
 
 			const numberOfResults = Math.min(10, scores.results.length);
 			for (let i = 0; i < numberOfResults; i++) {
 				const result = scores.results[i];
-				html += `<tr><td>${result.nom}</td><td>${result.score}</td></tr>`;
+				html += `<tr><td><h4>${result.nom}</h4></td><td><h4>${result.score}</h4></td></tr>`;
 			}
 
 			html += '</tbody></table>';
