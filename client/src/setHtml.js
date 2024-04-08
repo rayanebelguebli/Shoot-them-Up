@@ -5,6 +5,8 @@ export default class setHtml {
 		<p> Pseudo : Jogz </p>
 		<p> jeu préféré : Rocket League </p>
 		<p>Rayane Belguebli 33%</p>
+		<p> Pseudo : Rayanou </p>
+		<p> jeu préféré : Fifa </p>
 		<p>Mathis Decoster 33%</p>
 		<p>pseudo: Wakly</p>
 		<p>jeu préféré : Teamfight Tactics</p>
