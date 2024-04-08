@@ -1,9 +1,11 @@
 export default class setHtml {
 	static credits() {
 		return `
-        <p>Julien Bouin </p>
-		<p>Rayane Belguebli</p>
-		<p>Mathis Decoster </p>
+        <p>Julien Bouin 33%</p>
+		<p>Rayane Belguebli 33%</p>
+		<p>Mathis Decoster 33%</p>
+		<p>pseudo: Wakly</p>
+		<p>jeu préféré : Teamfight Tactics</p>
 		<p>Groupe H</p>
 		<button class="retourMenu">Retour au menu</button>`;
 	}
