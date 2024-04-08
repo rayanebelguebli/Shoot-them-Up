@@ -39,6 +39,8 @@ setInterval(function () {
 		io.emit('timer', t.getMin(), t.getSec());
 	} else {
 		t = new timer();
+		LVL2start = false;
+		LVL3start = false;
 	}
 }, 1000);
 
