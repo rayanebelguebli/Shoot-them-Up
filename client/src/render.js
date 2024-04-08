@@ -61,7 +61,7 @@ export default class Render {
 	}
 
 	renderVies(avatars, context, i) {
-		this.imageCoeur.src = `/images/heart${i}.webp`;
+		this.imageCoeur.src = `/images/heart1.webp`;
 		for (let j = 0; j < avatars[i].vies; j++) {
 			context.drawImage(
 				this.imageCoeur,
